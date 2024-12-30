@@ -75,10 +75,18 @@ WSGI_APPLICATION = 'news_platform.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'news_platform',  # نام دیتابیس
+        'USER': 'root',           # نام کاربری MySQL
+        'PASSWORD': '1111',   # رمز عبور MySQL
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',  # پشتیبانی از یونیکد
+        },
     }
 }
+
 
 
 # Password validation
