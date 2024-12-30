@@ -10,3 +10,12 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username  # نمایش نام کاربری در ادمین پنل
+
+
+# مدل تنظیمات سایت
+class SiteSettings(models.Model):
+    site_name = models.CharField(max_length=100, verbose_name="نام سایت")  # نام سایت
+    description = models.TextField(verbose_name="توضیحات")  # توضیحات سایت
+
+    def __str__(self):
+        return self.site_name  # نمایش نام سایت
