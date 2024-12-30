@@ -8,3 +8,13 @@
     <h1>به سایت خبری خوش آمدید</h1>
 </body>
 </html>
+
+<div>
+    {% if user.is_authenticated %}
+        <p>سلام، {{ user.username }}</p>
+        <a href="{% url 'logout' %}">خروج</a>
+    {% else %}
+        <a href="{% url 'login' %}">ورود</a> | 
+        <a href="{% url 'register' %}">ثبت‌نام</a>
+    {% endif %}
+</div>
