@@ -19,6 +19,7 @@ from django.urls import path, include
 from news.views import home
 
 urlpatterns = [
+    path('', include('news.urls')),  # مسیر اپلیکیشن news
     path('', home, name='home'),  # مسیر صفحه اصلی
     path('accounts/', include('accounts.urls')),  # مسیر اپلیکیشن accounts
     path('admin/', admin.site.urls),

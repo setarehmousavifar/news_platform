@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>لیست اخبار</title>
+</head>
+<body>
+    <h1>لیست اخبار</h1>
+    <ul>
+        {% for news in news_list %}
+            <li>
+                <a href="#">{{ news.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

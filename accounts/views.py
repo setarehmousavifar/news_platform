@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import user_passes_test
 
 # نمایش و مدیریت فرم ثبت‌نام
 def register(request):
@@ -36,3 +37,13 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('home')  # بازگشت به صفحه اصلی پس از خروج
+
+
+# بررسی نقش ادمین
+def is_admin(user):
+    return user.is_admin or user.is_superuser
+
+# Decorator برای دسترسی فقط ادمین‌ها
+admin_required = user_passes_test(is_admin)
+
+
