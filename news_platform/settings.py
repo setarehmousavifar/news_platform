@@ -57,7 +57,7 @@ ROOT_URLCONF = 'news_platform.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # اضافه کردن مسیر templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
