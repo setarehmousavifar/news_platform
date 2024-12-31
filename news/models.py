@@ -20,10 +20,9 @@ class News(models.Model):
     likes_count = models.IntegerField(default=0, verbose_name="تعداد لایک‌ها")  # تعداد لایک‌ها
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name="دسته‌بندی")  # ارتباط با دسته‌بندی
     image = models.ImageField(upload_to='news_images/', blank=True, verbose_name="تصویر خبر")  # آپلود تصویر خبر
-    video = models.FileField(upload_to='news_videos/', blank=True, verbose_name="ویدئو خبر")
+    video = models.FileField(upload_to='news_videos/', blank=True, verbose_name="ویدئو خبر") # آپلود ویدئو خبر
+    views_count = models.IntegerField(default=0, verbose_name="تعداد بازدید") #تعداد بازدید اخبار
 
 
     def __str__(self):
         return self.title  # نمایش عنوان خبر
-
-
