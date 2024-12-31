@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.views import admin_required
 from .forms import NewsForm
 from .models import News
+from django.shortcuts import get_object_or_404
 
 def home(request):
     return render(request, 'home.html')  # نمایش صفحه اصلی
@@ -27,3 +28,8 @@ def news_list(request):
     news_list = News.objects.all()# گرفتن تمام اخبار از دیتابیس
     return render(request, 'news/news_list.html', {'news_list': news_list})
 
+
+# نمایش جزئیات خبر
+def news_detail(request, pk):
+    news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
+    return render(request, 'news/news_detail.html', {'news': news})
