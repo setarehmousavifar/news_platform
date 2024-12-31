@@ -68,6 +68,8 @@ def like_news(request, news_id):
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
     related_news = News.objects.filter(category=news.category).exclude(id=news.id)[:5]  # 5 خبر مرتبط
+    news.views_count += 1
+    news.save()
     comments = news.comments.all()  # گرفتن نظرات مرتبط با این خبر
     total_likes = news.likes.count()  # تعداد لایک‌ها
     if request.method == 'POST':

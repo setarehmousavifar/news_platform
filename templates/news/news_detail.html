@@ -10,7 +10,7 @@
     <p>تاریخ انتشار: {{ news.published_date }}</p>
     <p>نویسنده: {{ news.author }}</p>
     {% if news.image %}
-        <img src="{{ news.image.url }}" alt="تصویر خبر">
+        <img src="{{ news.image.url }}" alt="{{ news.title }}" style="width: 300px; height: auto;">
     {% endif %}
     <a href="/news/">بازگشت به لیست اخبار</a>
 </body>
@@ -62,3 +62,5 @@
         <li>خبر مرتبطی یافت نشد.</li>
     {% endfor %}
 </ul>
+
+<p>تعداد بازدید: {{ news.views_count }}</p>

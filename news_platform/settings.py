@@ -136,3 +136,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 LOGIN_REDIRECT_URL = '/news/add/'  # مسیر پیش‌فرض پس از لاگین
 LOGIN_URL = '/accounts/login/'  # مسیر صفحه لاگین
+
+# تنظیمات مربوط به فایل‌های رسانه‌ای
+MEDIA_URL = '/media/'  # مسیر URL برای دسترسی به فایل‌های رسانه‌ای
+MEDIA_ROOT = BASE_DIR / 'media'  # مسیر ذخیره فایل‌ها در سیستم
