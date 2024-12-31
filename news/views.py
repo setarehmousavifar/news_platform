@@ -4,6 +4,10 @@ from accounts.views import admin_required
 from .forms import NewsForm
 from .models import News
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from interactions.forms import CommentForm
+from interactions.models import Comment
+
 
 def home(request):
     return render(request, 'home.html')  # نمایش صفحه اصلی
@@ -33,3 +37,32 @@ def news_list(request):
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
     return render(request, 'news/news_detail.html', {'news': news})
+
+
+# View برای لایک کردن خبر
+@login_required
+def like_news(request, news_id):
+    news = get_object_or_404(News, id=news_id)
+    if request.user in news.likes.all():
+        news.likes.remove(request.user)  # اگر قبلاً لایک شده، حذف لایک
+        liked = False
+    else:
+        news.likes.add(request.user)  # اگر لایک نشده، اضافه کن
+        liked = True
+    return JsonResponse({'liked': liked, 'total_likes': news.likes.count()})
+
+
+def news_detail(request, news_id):
+    news = get_object_or_404(News, id=news_id)
+    comments = news.comments.all()  # گرفتن نظرات مرتبط با این خبر
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.news = news
+            comment.save()
+            return redirect('news_detail', news_id=news.id)
+    else:
+        form = CommentForm()
+    return render(request, 'news/news_detail.html', {'news': news, 'comments': comments, 'form': form})

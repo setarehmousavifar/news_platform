@@ -15,3 +15,41 @@
     <a href="/news/">بازگشت به لیست اخبار</a>
 </body>
 </html>
+
+<button id="like-button" data-news-id="{{ news.id }}">
+    {% if user in news.likes.all %}
+        لغو لایک
+    {% else %}
+        لایک
+    {% endif %}
+</button>
+<p>تعداد لایک‌ها: <span id="like-count">{{ news.total_likes }}</span></p>
+
+<script>
+    document.getElementById('like-button').addEventListener('click', function() {
+        const newsId = this.getAttribute('data-news-id');
+        fetch(`/news/${newsId}/like/`, { method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}'} })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('like-count').innerText = data.total_likes;
+            this.innerText = data.liked ? 'لغو لایک' : 'لایک';
+        });
+    });
+</script>
+
+<h2>نظرات</h2>
+<ul>
+    {% for comment in comments %}
+        <li><strong>{{ comment.user.username }}</strong>: {{ comment.content }} ({{ comment.created_at }})</li>
+    {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">ارسال نظر</button>
+    </form>
+{% else %}
+    <p>برای درج نظر، ابتدا وارد شوید.</p>
+{% endif %}
