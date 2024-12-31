@@ -11,7 +11,10 @@ def register(request):
         if form.is_valid():
             user = form.save()  # ذخیره کاربر جدید
             login(request, user)  # ورود خودکار پس از ثبت‌نام
-            return redirect('home')  # بازگشت به صفحه اصلی
+            next_url = request.GET.get('next')  # بررسی وجود مسیر مورد نظر
+            if next_url:
+                return redirect(next_url)  # هدایت به مسیر مورد نظر
+            return redirect('home')  # هدایت به صفحه اصلی اگر مسیر خاصی وجود نداشت
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -27,10 +30,14 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')  # هدایت به صفحه اصلی پس از ورود
+                next_url = request.GET.get('next')  # بررسی وجود مسیر مورد نظر
+                if next_url:
+                    return redirect(next_url)  # هدایت به مسیر مورد نظر
+                return redirect('home')  # هدایت به صفحه اصلی اگر مسیر خاصی وجود نداشت
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
+
 
 
 # View خروج کاربران
