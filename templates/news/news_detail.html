@@ -8,6 +8,10 @@
     <h1>{{ news.title }}</h1>
     <p>{{ news.content }}</p>
     <p>تاریخ انتشار: {{ news.published_date }}</p>
+    <p>نویسنده: {{ news.author }}</p>
+    {% if news.image %}
+        <img src="{{ news.image.url }}" alt="تصویر خبر">
+    {% endif %}
     <a href="/news/">بازگشت به لیست اخبار</a>
 </body>
 </html>

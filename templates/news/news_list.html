@@ -9,7 +9,7 @@
     <ul>
         {% for news in news_list %}
             <li>
-                <a href="#">{{ news.title }}</a>
+                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a><a href="#">
             </li>
         {% endfor %}
     </ul>
