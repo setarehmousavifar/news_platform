@@ -67,6 +67,7 @@ def like_news(request, news_id):
 # نمایش جزئیات خبر
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
+    related_news = News.objects.filter(category=news.category).exclude(id=news.id)[:5]  # 5 خبر مرتبط
     comments = news.comments.all()  # گرفتن نظرات مرتبط با این خبر
     total_likes = news.likes.count()  # تعداد لایک‌ها
     if request.method == 'POST':
@@ -79,4 +80,4 @@ def news_detail(request, pk):
             return redirect('news_detail', pk=news.pk)  # بازگشت به صفحه جزئیات خبر
     else:
         form = CommentForm()
-    return render(request, 'news/news_detail.html', {'news': news, 'comments': comments, 'form': form, 'total_likes': total_likes})
+    return render(request, 'news/news_detail.html', {'news': news, 'related_news': related_news, 'comments': comments, 'form': form, 'total_likes': total_likes})

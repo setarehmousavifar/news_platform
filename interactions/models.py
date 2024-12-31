@@ -29,6 +29,7 @@ class Like(models.Model):
 class CommentLike(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="کاربر")  # کاربر لایک‌کننده
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, verbose_name="نظر")  # نظر لایک‌شده
+    is_like = models.BooleanField(default=True)  # True برای لایک، False برای دیسلایک
 
     class Meta:
         unique_together = ('user', 'comment')  # هر کاربر فقط یک بار می‌تونه یک نظر رو لایک کنه
