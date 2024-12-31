@@ -33,12 +33,6 @@ def news_list(request):
     return render(request, 'news/news_list.html', {'news_list': news_list})
 
 
-# نمایش جزئیات خبر
-def news_detail(request, pk):
-    news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
-    return render(request, 'news/news_detail.html', {'news': news})
-
-
 # View برای لایک کردن خبر
 @login_required
 def like_news(request, news_id):
@@ -52,8 +46,9 @@ def like_news(request, news_id):
     return JsonResponse({'liked': liked, 'total_likes': news.likes.count()})
 
 
-def news_detail(request, news_id):
-    news = get_object_or_404(News, id=news_id)
+# نمایش جزئیات خبر
+def news_detail(request, pk):
+    news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
     comments = news.comments.all()  # گرفتن نظرات مرتبط با این خبر
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -62,7 +57,7 @@ def news_detail(request, news_id):
             comment.user = request.user
             comment.news = news
             comment.save()
-            return redirect('news_detail', news_id=news.id)
+            return redirect('news_detail', pk=news.pk)  # بازگشت به صفحه جزئیات خبر
     else:
         form = CommentForm()
     return render(request, 'news/news_detail.html', {'news': news, 'comments': comments, 'form': form})

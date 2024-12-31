@@ -16,7 +16,7 @@
 </body>
 </html>
 
-<button id="like-button" data-news-id="{{ news.id }}">
+<button id="like-button" data-news-id="{{ news.pk }}">
     {% if user in news.likes.all %}
         لغو لایک
     {% else %}
