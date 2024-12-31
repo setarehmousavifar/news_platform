@@ -8,6 +8,9 @@ from django.http import JsonResponse
 from interactions.forms import CommentForm
 from interactions.models import Comment
 from django.db.models import Q
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import NewsSerializer
 
 # صفحه اصلی
 def home(request):
@@ -83,3 +86,16 @@ def news_detail(request, pk):
     else:
         form = CommentForm()
     return render(request, 'news/news_detail.html', {'news': news, 'related_news': related_news, 'comments': comments, 'form': form, 'total_likes': total_likes})
+
+
+@api_view(['GET'])
+def news_list_api(request):
+    news = News.objects.all()
+    serializer = NewsSerializer(news, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def news_detail_api(request, pk):
+    news = News.objects.get(pk=pk)
+    serializer = NewsSerializer(news)
+    return Response(serializer.data)

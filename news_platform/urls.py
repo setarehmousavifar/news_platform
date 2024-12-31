@@ -25,4 +25,5 @@ urlpatterns = [
     path('news/', include('news.urls')),  # مسیر اپلیکیشن news
     path('accounts/', include('accounts.urls')),  # مسیر اپلیکیشن accounts
     path('admin/', admin.site.urls),
+    path('api/', include('news.api_urls')),  # آدرس‌های API
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
