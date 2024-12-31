@@ -53,3 +53,12 @@
 {% else %}
     <p>برای درج نظر، ابتدا وارد شوید.</p>
 {% endif %}
+
+<h2>اخبار مرتبط</h2>
+<ul>
+    {% for related in related_news %}
+        <li><a href="{% url 'news_detail' related.id %}">{{ related.title }}</a></li>
+    {% empty %}
+        <li>خبر مرتبطی یافت نشد.</li>
+    {% endfor %}
+</ul>
