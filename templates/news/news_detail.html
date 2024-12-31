@@ -23,7 +23,7 @@
         لایک
     {% endif %}
 </button>
-<p>تعداد لایک‌ها: <span id="like-count">{{ news.total_likes }}</span></p>
+<p>تعداد لایک‌ها: {{ total_likes }}</p>
 
 <script>
     document.getElementById('like-button').addEventListener('click', function() {
