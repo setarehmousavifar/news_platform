@@ -10,7 +10,9 @@ from interactions.models import Comment
 
 
 def home(request):
-    return render(request, 'home.html')  # نمایش صفحه اصلی
+    latest_news = News.objects.order_by('-published_date')[:5]  # گرفتن 5 خبر اخیر
+    return render(request, 'home.html', {'latest_news': latest_news})
+
 
 
 # View برای افزودن خبر جدید
@@ -29,8 +31,8 @@ def add_news(request):
 
 # نمایش لیست اخبار
 def news_list(request):
-    news_list = News.objects.all()# گرفتن تمام اخبار از دیتابیس
-    return render(request, 'news/news_list.html', {'news_list': news_list})
+    latest_news = News.objects.order_by('-published_date')[:10]  # 5 خبر اخیر
+    return render(request, 'news/news_list.html', {'latest_news': latest_news})
 
 
 # View برای لایک کردن خبر

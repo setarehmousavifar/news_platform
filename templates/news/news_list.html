@@ -13,5 +13,14 @@
             </li>
         {% endfor %}
     </ul>
+    
+    <h2>جدیدترین اخبار</h2>
+    <ul>
+    {% for news in latest_news %}
+        <li><a href="{% url 'news_detail' news.id %}">{{ news.title }}</a></li>
+    {% empty %}
+        <li>خبری یافت نشد.</li>
+    {% endfor %}
+    </ul>
 </body>
 </html>
