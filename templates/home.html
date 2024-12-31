@@ -27,3 +27,27 @@
         <li>خبری یافت نشد.</li>
     {% endfor %}
 </ul>
+
+<h2>جست‌وجو در اخبار</h2>
+<form method="get" action="{% url 'home' %}">
+    <input type="text" name="q" placeholder="جست‌وجو..." value="{{ query }}">
+    <button type="submit">جست‌وجو</button>
+</form>
+
+<h2>آخرین اخبار</h2>
+<ul>
+    {% for news in latest_news %}
+        <li>
+            <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a> - {{ news.published_date|date:"Y-m-d H:i" }}
+        </li>
+    {% endfor %}
+</ul>
+
+<h2>تمام اخبار</h2>
+<ul>
+    {% for news in news_list %}
+        <li>
+            <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
+        </li>
+    {% endfor %}
+</ul>

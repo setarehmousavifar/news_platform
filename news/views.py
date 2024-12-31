@@ -7,12 +7,20 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from interactions.forms import CommentForm
 from interactions.models import Comment
+from django.db.models import Q
 
-
+# صفحه اصلی
 def home(request):
-    latest_news = News.objects.order_by('-published_date')[:5]  # گرفتن 5 خبر اخیر
-    return render(request, 'home.html', {'latest_news': latest_news})
-
+    query = request.GET.get('q')  # گرفتن ورودی جست‌وجو از URL
+    if query:
+        news_list = News.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)  # جست‌وجو در عنوان و متن
+        )
+    else:
+        news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
+    
+    latest_news = News.objects.order_by('-published_date')[:10]  # 10 خبر اخیر
+    return render(request, 'home.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
 
 
 # View برای افزودن خبر جدید
@@ -31,8 +39,16 @@ def add_news(request):
 
 # نمایش لیست اخبار
 def news_list(request):
-    latest_news = News.objects.order_by('-published_date')[:10]  # 5 خبر اخیر
-    return render(request, 'news/news_list.html', {'latest_news': latest_news})
+    query = request.GET.get('q')  # گرفتن ورودی جست‌وجو از URL
+    if query:
+        news_list = News.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)  # جست‌وجو در عنوان و متن
+        )
+    else:
+        news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
+    
+    latest_news = News.objects.order_by('-published_date')[:10]  # 10 خبر اخیر
+    return render(request, 'news/news_list.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
 
 
 # View برای لایک کردن خبر
