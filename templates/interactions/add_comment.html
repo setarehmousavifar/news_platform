@@ -1,0 +1,12 @@
+{% for comment in comments %}
+  <p>{{ comment.content }} توسط {{ comment.user.username }}</p>
+  <a href="#" onclick="setReply({{ comment.id }})">پاسخ دادن</a>
+  {% for reply in comment.replies.all %}
+    <p>↳ {{ reply.content }} توسط {{ reply.user.username }}</p>
+  {% endfor %}
+{% endfor %}
+<form id="comment-form" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">ارسال</button>
+</form>

@@ -40,9 +40,28 @@
 <h2>نظرات</h2>
 <ul>
     {% for comment in comments %}
-        <li><strong>{{ comment.user.username }}</strong>: {{ comment.content }} ({{ comment.created_at }})</li>
+        <li>
+            <p>{{ comment.content }} - <b>{{ comment.user.username }}</b> ({{ comment.created_at }})</p>
+            <button onclick="document.getElementById('parent-id-{{ comment.id }}').style.display='block';">ریپلای</button>
+            <form method="post" style="display: none;" id="parent-id-{{ comment.id }}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <button type="submit">ارسال ریپلای</button>
+            </form>
+            {% if comment.replies.all %}
+                <ul>
+                    {% for reply in comment.replies.all %}
+                        <li>
+                            <p>{{ reply.content }} - <b>{{ reply.user.username }}</b> ({{ reply.created_at }})</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
     {% endfor %}
 </ul>
+
 
 {% if user.is_authenticated %}
     <form method="POST">

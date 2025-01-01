@@ -73,14 +73,17 @@ def news_detail(request, pk):
     related_news = News.objects.filter(category=news.category).exclude(id=news.id)[:5]  # 5 خبر مرتبط
     news.views_count += 1
     news.save()
-    comments = news.comments.all()  # گرفتن نظرات مرتبط با این خبر
+    comments = Comment.objects.filter(news=news, parent=None)  # نظرات اصلی
     total_likes = news.likes.count()  # تعداد لایک‌ها
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
+            parent_id = request.POST.get("parent_id")  # گرفتن ID والد
+            parent = Comment.objects.get(id=parent_id) if parent_id else None
             comment = form.save(commit=False)
             comment.user = request.user
             comment.news = news
+            comment.parent = parent  # تنظیم والد
             comment.save()
             return redirect('news_detail', pk=news.pk)  # بازگشت به صفحه جزئیات خبر
     else:
