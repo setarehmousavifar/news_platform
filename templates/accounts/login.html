@@ -2,14 +2,24 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورود</title>
 </head>
 <body>
+    <!-- عنوان صفحه -->
     <h1>ورود به سایت</h1>
+
+    <!-- فرم ورود -->
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">ورود</button>
     </form>
+
+    <!-- پیام ثبت‌نام -->
+    <p>اگر حساب کاربری ندارید، از <a href="{% url 'register' %}">اینجا</a> ثبت‌نام کنید.</p>
+
+    <!-- لینک بازگشت -->
+    <a href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
 </body>
 </html>
