@@ -141,3 +141,11 @@ LOGIN_URL = '/accounts/login/'  # مسیر صفحه لاگین
 # تنظیمات مربوط به فایل‌های رسانه‌ای
 MEDIA_URL = '/media/'  # مسیر URL برای دسترسی به فایل‌های رسانه‌ای
 MEDIA_ROOT = BASE_DIR / 'media'  # مسیر ذخیره فایل‌ها در سیستم
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'setaremousavifar@gmail.com'  
+EMAIL_HOST_PASSWORD = 'dsss dcic jlmj vtvu'  # App Password
