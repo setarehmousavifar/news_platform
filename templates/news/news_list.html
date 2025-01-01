@@ -5,38 +5,40 @@
     <title>لیست اخبار</title>
 </head>
 <body>
+    <!-- عنوان صفحه -->
     <h1>لیست اخبار</h1>
+
+    <!-- فرم جست‌وجو -->
+    <form method="get" action="{% url 'news_list' %}">
+        <input type="text" name="q" value="{{ query }}" placeholder="جست‌وجو در اخبار...">
+        <button type="submit">جست‌وجو</button>
+    </form>
+
+    <!-- نمایش لیست اخبار -->
+    <h2>تمام اخبار</h2>
     <ul>
         {% for news in news_list %}
             <li>
-                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a><a href="#">
+                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
             </li>
+        {% empty %}
+            <li>خبری یافت نشد.</li>
         {% endfor %}
     </ul>
-    
+
+    <!-- نمایش جدیدترین اخبار -->
     <h2>جدیدترین اخبار</h2>
     <ul>
-    {% for news in latest_news %}
-        <li><a href="{% url 'news_detail' news.id %}">{{ news.title }}</a></li>
-    {% empty %}
-        <li>خبری یافت نشد.</li>
-    {% endfor %}
+        {% for news in latest_news %}
+            <li>
+                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
+            </li>
+        {% empty %}
+            <li>خبری یافت نشد.</li>
+        {% endfor %}
     </ul>
+
+    <!-- لینک بازگشت به خانه -->
+    <a href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
 </body>
 </html>
-
-<form method="get" action="{% url 'news_list' %}">
-    <input type="text" name="q" value="{{ query }}" placeholder="جست‌وجو در اخبار...">
-    <button type="submit">جست‌وجو</button>
-</form>
-
-<h2>لیست اخبار</h2>
-<ul>
-    {% for news in news_list %}
-        <li>
-            <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
-        </li>
-    {% empty %}
-        <li>خبری یافت نشد.</li>
-    {% endfor %}
-</ul>
