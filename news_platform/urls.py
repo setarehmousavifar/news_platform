@@ -19,6 +19,7 @@ from django.urls import path, include
 from news.views import home
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', home, name='home'),  # مسیر صفحه اصلی
@@ -26,4 +27,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),  # مسیر اپلیکیشن accounts
     path('admin/', admin.site.urls),
     path('api/', include('news.api_urls')),  # آدرس‌های API
+    path('about/', TemplateView.as_view(template_name="about.html"), name='about'),  # صفحه درباره ما
+    path('contact/', TemplateView.as_view(template_name="contact.html"), name='contact'),  # صفحه تماس با ما
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

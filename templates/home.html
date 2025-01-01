@@ -5,49 +5,73 @@
     <title>صفحه اصلی</title>
 </head>
 <body>
-    <h1>به سایت خبری خوش آمدید</h1>
+    <!-- بخش خوشامدگویی -->
+    <header>
+        <h1>به سایت خبری خوش آمدید</h1>
+    </header>
+
+    <!-- بخش پروفایل و ورود/خروج -->
+    <div>
+        {% if user.is_authenticated %}
+            <p>سلام، {{ user.username }}</p>
+            <a href="{% url 'logout' %}">خروج</a>
+        {% else %}
+            <a href="{% url 'login' %}">ورود</a> | 
+            <a href="{% url 'register' %}">ثبت‌نام</a>
+        {% endif %}
+    </div>
+
+    <!-- لینک‌های جدید: درباره ما و تماس با ما -->
+    <nav>
+        <a href="{% url 'home' %}">خانه</a> | 
+        <a href="{% url 'about' %}">درباره ما</a> | 
+        <a href="{% url 'contact' %}">تماس با ما</a>
+    </nav>
+
+
+    <!-- بخش جدیدترین اخبار -->
+    <section>
+        <h2>جدیدترین اخبار</h2>
+        <ul>
+            {% for news in latest_news %}
+                <li><a href="{% url 'news_detail' news.id %}">{{ news.title }}</a></li>
+            {% empty %}
+                <li>خبری یافت نشد.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- بخش جست‌وجو در اخبار -->
+    <section>
+        <h2>جست‌وجو در اخبار</h2>
+        <form method="get" action="{% url 'home' %}">
+            <input type="text" name="q" placeholder="جست‌وجو..." value="{{ query }}">
+            <button type="submit">جست‌وجو</button>
+        </form>
+    </section>
+
+    <!-- بخش آخرین اخبار -->
+    <section>
+        <h2>آخرین اخبار</h2>
+        <ul>
+            {% for news in latest_news %}
+                <li>
+                    <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a> - {{ news.published_date|date:"Y-m-d H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- بخش تمام اخبار -->
+    <section>
+        <h2>تمام اخبار</h2>
+        <ul>
+            {% for news in news_list %}
+                <li>
+                    <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
 </body>
 </html>
-
-<div>
-    {% if user.is_authenticated %}
-        <p>سلام، {{ user.username }}</p>
-        <a href="{% url 'logout' %}">خروج</a>
-    {% else %}
-        <a href="{% url 'login' %}">ورود</a> | 
-        <a href="{% url 'register' %}">ثبت‌نام</a>
-    {% endif %}
-</div>
-
-<h2>جدیدترین اخبار</h2>
-<ul>
-    {% for news in latest_news %}
-        <li><a href="{% url 'news_detail' news.id %}">{{ news.title }}</a></li>
-    {% empty %}
-        <li>خبری یافت نشد.</li>
-    {% endfor %}
-</ul>
-
-<h2>جست‌وجو در اخبار</h2>
-<form method="get" action="{% url 'home' %}">
-    <input type="text" name="q" placeholder="جست‌وجو..." value="{{ query }}">
-    <button type="submit">جست‌وجو</button>
-</form>
-
-<h2>آخرین اخبار</h2>
-<ul>
-    {% for news in latest_news %}
-        <li>
-            <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a> - {{ news.published_date|date:"Y-m-d H:i" }}
-        </li>
-    {% endfor %}
-</ul>
-
-<h2>تمام اخبار</h2>
-<ul>
-    {% for news in news_list %}
-        <li>
-            <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
-        </li>
-    {% endfor %}
-</ul>
