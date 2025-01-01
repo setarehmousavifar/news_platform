@@ -1,12 +1,42 @@
-{% for comment in comments %}
-  <p>{{ comment.content }} توسط {{ comment.user.username }}</p>
-  <a href="#" onclick="setReply({{ comment.id }})">پاسخ دادن</a>
-  {% for reply in comment.replies.all %}
-    <p>↳ {{ reply.content }} توسط {{ reply.user.username }}</p>
-  {% endfor %}
-{% endfor %}
-<form id="comment-form" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">ارسال</button>
-</form>
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظرات</title>
+</head>
+<body>
+    <!-- نمایش نظرات -->
+    <h2>نظرات</h2>
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <p>{{ comment.content }} - <b>توسط {{ comment.user.username }}</b></p>
+                <button onclick="document.getElementById('reply-form-{{ comment.id }}').style.display='block';">پاسخ دادن</button>
+                <form id="reply-form-{{ comment.id }}" method="post" style="display: none;">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <button type="submit">ارسال پاسخ</button>
+                </form>
+                
+                <!-- نمایش پاسخ‌ها -->
+                {% if comment.replies.all %}
+                    <ul>
+                        {% for reply in comment.replies.all %}
+                            <li>
+                                <p>↳ {{ reply.content }} - <b>توسط {{ reply.user.username }}</b></p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- فرم ارسال نظر جدید -->
+    <h3>ارسال نظر جدید</h3>
+    <form id="comment-form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+    
