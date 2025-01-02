@@ -4,6 +4,7 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import HttpResponseForbidden  # برای پاسخ مناسب در دسترسی غیرمجاز
+from .models import SiteSettings
 
 # نمایش و مدیریت فرم ثبت‌نام
 def register(request):
@@ -80,3 +81,8 @@ def admin_dashboard(request):
     
     # نمایش داشبورد ادمین
     return render(request, 'accounts/admin_dashboard.html')
+
+
+def some_view(request):
+    settings = SiteSettings.objects.first()  # دریافت اولین تنظیمات سایت
+    return render(request, 'template.html', {'settings': settings})

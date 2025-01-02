@@ -16,12 +16,13 @@ class CustomUser(AbstractUser):
         return f"{self.username} ({self.get_user_type_display()})"  # نمایش نام کاربری و نوع کاربر
 
 
-
-
 # مدل تنظیمات سایت
 class SiteSettings(models.Model):
-    site_name = models.CharField(max_length=100, verbose_name="نام سایت")  # نام سایت
+    site_name = models.CharField(max_length=225, verbose_name="نام سایت")  # نام سایت
+    logo = models.ImageField(upload_to='logos/', null=True, blank=True, verbose_name="لوگو")  # لوگوی سایت
+    default_email = models.EmailField(null=True, blank=True, verbose_name="ایمیل پیش‌فرض")  # ایمیل پیش‌فرض
+    footer_text = models.TextField(null=True, blank=True, verbose_name="متن فوتر")  # متن فوتر سایت
     description = models.TextField(verbose_name="توضیحات")  # توضیحات سایت
 
     def __str__(self):
-        return self.site_name  # نمایش نام سایت
+        return self.site_name  # نمایش نام سایت در پنل ادمین
