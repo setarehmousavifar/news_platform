@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.http import HttpResponseForbidden  # برای پاسخ مناسب در دسترسی غیرمجاز
 
 # نمایش و مدیریت فرم ثبت‌نام
 def register(request):
+    """
+    ویوی ثبت‌نام کاربران جدید
+    """
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -20,8 +24,11 @@ def register(request):
     return render(request, 'accounts/register.html', {'form': form})
 
 
-# View ورود کاربران
+# ورود کاربران
 def user_login(request):
+    """
+    ویوی ورود کاربران به سیستم
+    """
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -39,18 +46,37 @@ def user_login(request):
     return render(request, 'accounts/login.html', {'form': form})
 
 
-
-# View خروج کاربران
+# خروج کاربران
 def user_logout(request):
+    """
+    ویوی خروج کاربران
+    """
     logout(request)
     return redirect('home')  # بازگشت به صفحه اصلی پس از خروج
 
 
 # بررسی نقش ادمین
 def is_admin(user):
-    return user.is_admin or user.is_superuser
+    """
+    بررسی می‌کند که آیا کاربر ادمین یا کاربر ارشد است.
+    """
+    return user.user_type == 'admin' or user.user_type == 'super_admin'
+
 
 # Decorator برای دسترسی فقط ادمین‌ها
 admin_required = user_passes_test(is_admin)
 
 
+# مدیریت برای ادمین‌ها
+@admin_required
+@login_required
+def admin_dashboard(request):
+    """
+    ویوی مخصوص ادمین برای مدیریت بخش‌ها
+    """
+    if request.user.user_type not in ['admin', 'super_admin']:
+        # اگر کاربر دسترسی لازم را نداشته باشد
+        return HttpResponseForbidden("شما اجازه دسترسی به این بخش را ندارید.")
+    
+    # نمایش داشبورد ادمین
+    return render(request, 'accounts/admin_dashboard.html')

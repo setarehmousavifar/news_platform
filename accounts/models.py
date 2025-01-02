@@ -2,14 +2,20 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-# مدل کاربر سفارشی
+# مدل کاربر سفارشی# models.py
 class CustomUser(AbstractUser):
+    USER_TYPE_CHOICES = (
+        ('normal', 'کاربر عادی'),
+        ('admin', 'ادمین'),
+        ('super_admin', 'کاربر ارشد'),
+    )
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='normal', verbose_name="نوع کاربر")  # نوع کاربر
     phone_number = models.CharField(max_length=15, unique=True, verbose_name="شماره موبایل")  # شماره موبایل
-    is_admin = models.BooleanField(default=False, verbose_name="ادمین")  # آیا ادمین است؟
-    is_superuser = models.BooleanField(default=False, verbose_name="کاربر ارشد")  # آیا کاربر ارشد است؟
 
     def __str__(self):
-        return self.username  # نمایش نام کاربری در ادمین پنل
+        return f"{self.username} ({self.get_user_type_display()})"  # نمایش نام کاربری و نوع کاربر
+
+
 
 
 # مدل تنظیمات سایت
