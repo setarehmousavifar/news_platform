@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from accounts.views import admin_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
+from accounts.views import admin_required, super_admin_required
 from .forms import NewsForm
 from .models import News
-from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from interactions.forms import CommentForm
 from interactions.models import Comment
@@ -26,18 +25,45 @@ def home(request):
     return render(request, 'home.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
 
 
-# View برای افزودن خبر جدید
+# فقط ادمین‌ها و سوپریوزرها اجازه دارند به این ویو دسترسی پیدا کنند
+def admin_required(user):
+    return user.user_type in ['admin', 'super_admin']
+
 @login_required
-@admin_required
-def add_news(request):
+@user_passes_test(admin_required)
+def create_news(request):
     if request.method == 'POST':
         form = NewsForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('news_list')  # بازگشت به لیست اخبار
+            news = form.save(commit=False)
+            news.author = request.user
+            news.save()
+            return redirect('news_list')  # بعد از ثبت خبر به لیست اخبار برگردد
     else:
         form = NewsForm()
-    return render(request, 'news/add_news.html', {'form': form})
+    return render(request, 'news/create_news.html', {'form': form})
+
+@login_required
+@user_passes_test(admin_required)
+def edit_news(request, pk):
+    news = get_object_or_404(News, pk=pk)
+    if request.method == 'POST':
+        form = NewsForm(request.POST, request.FILES, instance=news)
+        if form.is_valid():
+            form.save()
+            return redirect('news_list')
+    else:
+        form = NewsForm(instance=news)
+    return render(request, 'news/edit_news.html', {'form': form})
+
+@login_required
+@user_passes_test(admin_required)
+def delete_news(request, pk):
+    news = get_object_or_404(News, pk=pk)
+    if request.method == 'POST':
+        news.delete()
+        return redirect('news_list')
+    return render(request, 'news/delete_news.html', {'news': news})
 
 
 # نمایش لیست اخبار
@@ -49,7 +75,10 @@ def news_list(request):
         )
     else:
         news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
-    
+
+    if request.user.user_type == 'admin':
+        news_list = News.objects.filter(author=request.user)
+
     latest_news = News.objects.order_by('-published_date')[:10]  # 10 خبر اخیر
     return render(request, 'news/news_list.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
 

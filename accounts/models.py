@@ -8,7 +8,8 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, unique=True, verbose_name="Phone Number")
     email = models.EmailField(unique=True)
     
-    def __str__(self): return f"{self.username} ({self.get_user_type_display()})"
+    def __str__(self): 
+        return f"{self.username} ({self.get_user_type_display()})"
 
 # Site Settings Model
 class SiteSettings(models.Model):
@@ -19,4 +20,5 @@ class SiteSettings(models.Model):
     footer_text = models.TextField(null=True, blank=True, verbose_name="Footer Text")
     description = models.TextField(verbose_name="Description")
 
-    def __str__(self): return self.site_name
+    def __str__(self): 
+        return self.site_name

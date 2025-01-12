@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -7,7 +7,41 @@ from django.http import HttpResponseForbidden  # برای پاسخ مناسب د
 from .models import SiteSettings
 from django.contrib import messages
 from .forms import UserProfileForm
+from accounts.decorators import super_admin_required
+from .models import CustomUser
+from .forms import UserEditForm
 
+# فقط سوپریوزرها اجازه دارند به این ویو دسترسی پیدا کنند
+def super_admin_required(user):
+    return user.user_type == 'super_admin'
+
+@login_required
+@user_passes_test(super_admin_required)
+def manage_users(request):
+    users = CustomUser.objects.all()
+    return render(request, 'accounts/manage_users.html', {'users': users})
+
+@login_required
+@user_passes_test(super_admin_required)
+def edit_user(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk)
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_users')  # Redirect to the manage users page
+    else:
+        form = UserEditForm(instance=user)
+    return render(request, 'accounts/edit_user.html', {'form': form})
+
+@login_required
+@user_passes_test(super_admin_required)
+def delete_user(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('manage_users')
+    return render(request, 'accounts/delete_user.html', {'user': user})
 
 # نمایش و مدیریت فرم ثبت‌نام
 def register(request):
