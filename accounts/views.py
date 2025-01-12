@@ -53,10 +53,13 @@ def register(request):
         if form.is_valid():
             user = form.save()  # ذخیره کاربر جدید
             login(request, user)  # ورود خودکار پس از ثبت‌نام
+            messages.success(request, 'Registration successful!')
             next_url = request.GET.get('next')  # بررسی وجود مسیر مورد نظر
             if next_url:
                 return redirect(next_url)  # هدایت به مسیر مورد نظر
             return redirect('home')  # هدایت به صفحه اصلی اگر مسیر خاصی وجود نداشت
+        else:
+            messages.error(request, 'There was an error in your registration. Please try again.')
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -75,10 +78,13 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                messages.success(request, 'You have successfully logged in.')
                 next_url = request.GET.get('next')  # بررسی وجود مسیر مورد نظر
                 if next_url:
                     return redirect(next_url)  # هدایت به مسیر مورد نظر
                 return redirect('home')  # هدایت به صفحه اصلی اگر مسیر خاصی وجود نداشت
+            else:
+                messages.error(request, 'Invalid username or password. Please try again.')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -101,7 +107,10 @@ def profile_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('profile')
+            next_url = request.GET.get('next')  # بررسی وجود مسیر مورد نظر
+            if next_url:
+                return redirect(next_url)  # هدایت به مسیر مورد نظر
+            return redirect('home')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:

@@ -157,3 +157,13 @@ EMAIL_HOST_PASSWORD = 'dsss dcic jlmj vtvu'  # App Password
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # مسیر فایل‌های استاتیک پروژه
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # مسیر جمع‌آوری فایل‌های استاتیک
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'error',
+}
