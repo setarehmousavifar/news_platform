@@ -5,6 +5,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import HttpResponseForbidden  # برای پاسخ مناسب در دسترسی غیرمجاز
 from .models import SiteSettings
+from django.contrib import messages
+from .forms import UserProfileForm
+
 
 # نمایش و مدیریت فرم ثبت‌نام
 def register(request):
@@ -54,6 +57,23 @@ def user_logout(request):
     """
     logout(request)
     return redirect('home')  # بازگشت به صفحه اصلی پس از خروج
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = UserProfileForm(instance=user)
+
+    return render(request, 'accounts/profile.html', {'form': form})
 
 
 # بررسی نقش ادمین
