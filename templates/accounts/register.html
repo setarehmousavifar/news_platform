@@ -3,21 +3,78 @@
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Page Title -->
-    <h1 class="text-center">Register</h1>
-
-    <!-- Registration Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="post" class="p-4 border rounded bg-light shadow-sm">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Register</button>
+    <h1 class="text-center">Sign Up</h1>
+    <form method="post" class="p-4 border rounded bg-light shadow-sm">
+        {% csrf_token %}
+        
+        <!-- First Name & Last Name -->
+        <div class="row mb-3">
+            <div class="col">
+                <label for="first_name" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" id="first_name" name="first_name" class="form-control" placeholder="First Name">
                 </div>
-            </form>
+            </div>
+            <div class="col">
+                <label for="last_name" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name">
+                </div>
+            </div>
         </div>
-    </div>
+
+        <!-- Username -->
+        <div class="mb-3">
+            <label for="username" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username">
+            </div>
+        </div>
+
+        <!-- Email Address -->
+        <div class="mb-3">
+            <label for="email" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Email Address">
+            </div>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="mb-3">
+            <label for="phone_number" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="Phone Number">
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <label for="password1" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="password1" name="password1" class="form-control" placeholder="Password">
+            </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-3">
+            <label for="password2" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password">
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </div>
+    </form>
 
     <!-- Login Prompt -->
     <div class="text-center mt-3">

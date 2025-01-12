@@ -3,28 +3,50 @@
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Page Title -->
     <h1 class="text-center">Login</h1>
-
-    <!-- Login Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="post" class="p-4 border rounded bg-light shadow-sm">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </div>
-            </form>
+    <form method="post" class="p-4 border rounded bg-light shadow-sm">
+        {% csrf_token %}
+        
+        <!-- Username -->
+        <div class="mb-3">
+            <label for="username" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username">
+            </div>
         </div>
-    </div>
 
-    <!-- Registration Prompt -->
-    <div class="text-center mt-3">
-        <p>If you don't have an account, <a href="{% url 'register' %}">register here</a>.</p>
-    </div>
+        <!-- Password -->
+        <div class="mb-3">
+            <label for="password" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+            </div>
+        </div>
 
-    <!-- Back to Home Link -->
+        <!-- Remember Me -->
+        <div class="form-check mb-3">
+            <input type="checkbox" id="remember_me" name="remember_me" class="form-check-input">
+            <label for="remember_me" class="form-check-label">Remember Me</label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="text-center mt-3">
+            <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot your password?</a>
+        </div>
+
+        <!-- Sign Up -->
+        <div class="text-center mt-3">
+            <p>Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Sign up here.</a></p>
+        </div>
+    </form>
+
     <div class="text-center mt-3">
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
     </div>

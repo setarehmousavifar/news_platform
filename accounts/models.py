@@ -6,7 +6,8 @@ class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (('normal', 'Normal User'), ('admin', 'Admin'), ('super_admin', 'Super Admin'))
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='normal', verbose_name="User Type")
     phone_number = models.CharField(max_length=15, unique=True, verbose_name="Phone Number")
-
+    email = models.EmailField(unique=True)
+    
     def __str__(self): return f"{self.username} ({self.get_user_type_display()})"
 
 # Site Settings Model
