@@ -1,29 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-# مدل کاربر سفارشی# models.py
+# Custom User Model
 class CustomUser(AbstractUser):
-    USER_TYPE_CHOICES = (
-        ('normal', 'کاربر عادی'),
-        ('admin', 'ادمین'),
-        ('super_admin', 'کاربر ارشد'),
-    )
-    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='normal', verbose_name="نوع کاربر")  # نوع کاربر
-    phone_number = models.CharField(max_length=15, unique=True, verbose_name="شماره موبایل")  # شماره موبایل
+    USER_TYPE_CHOICES = (('normal', 'Normal User'), ('admin', 'Admin'), ('super_admin', 'Super Admin'))
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='normal', verbose_name="User Type")
+    phone_number = models.CharField(max_length=15, unique=True, verbose_name="Phone Number")
 
-    def __str__(self):
-        return f"{self.username} ({self.get_user_type_display()})"  # نمایش نام کاربری و نوع کاربر
+    def __str__(self): return f"{self.username} ({self.get_user_type_display()})"
 
-
-# مدل تنظیمات سایت
+# Site Settings Model
 class SiteSettings(models.Model):
-    site_name = models.CharField(max_length=225, verbose_name="نام سایت")  # نام سایت
-    logo = models.ImageField(upload_to='logos/', null=True, blank=True, verbose_name="لوگو")  # لوگوی سایت
-    default_email = models.EmailField(null=True, blank=True, verbose_name="ایمیل پیش‌فرض")  # ایمیل پیش‌فرض
-    phone_number = models.CharField(max_length=15, default=00000000000, verbose_name="شماره تماس")
-    footer_text = models.TextField(null=True, blank=True, verbose_name="متن فوتر")  # متن فوتر سایت
-    description = models.TextField(verbose_name="توضیحات")  # توضیحات سایت
+    site_name = models.CharField(max_length=225, verbose_name="Site Name")
+    logo = models.ImageField(upload_to='logos/', null=True, blank=True, verbose_name="Logo")
+    default_email = models.EmailField(null=True, blank=True, verbose_name="Default Email")
+    phone_number = models.CharField(max_length=15, default='00000000000', verbose_name="Phone Number")
+    footer_text = models.TextField(null=True, blank=True, verbose_name="Footer Text")
+    description = models.TextField(verbose_name="Description")
 
-    def __str__(self):
-        return self.site_name  # نمایش نام سایت در پنل ادمین
+    def __str__(self): return self.site_name

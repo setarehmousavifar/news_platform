@@ -4,4 +4,4 @@ from .models import News
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'content', 'image', 'category']  # فیلدهای فرم
+        fields = ['title', 'content', 'image', 'category']  # Form fields

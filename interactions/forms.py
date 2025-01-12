@@ -4,8 +4,8 @@ from .models import Comment
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content', 'parent']  # فیلدهای فرم شامل متن نظر و نظر والد
-        labels = {'content': 'متن نظر'}  # برچسب برای متن نظر
+        fields = ['content', 'parent']  # Form fields including comment content and parent comment
+        labels = {'content': 'Comment Text'}  # Label for the comment content
         widgets = {
-            'parent': forms.HiddenInput()  # نمایش فیلد parent به صورت مخفی
+            'parent': forms.HiddenInput()  # Display the parent field as hidden
         }
