@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'news',
     'interactions',
     'rest_framework',
+    'news_platform',
 ]
 
 MIDDLEWARE = [
@@ -115,9 +116,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
 
-LANGUAGE_CODE = 'fa'  # تغییر زبان پیش‌فرض به فارسی
-TIME_ZONE = 'Asia/Tehran'
 USE_I18N = True  # فعال کردن پشتیبانی از ترجمه
 USE_L10N = True  # استفاده از قالب‌بندی محلی
 USE_TZ = True
@@ -149,3 +150,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'setaremousavifar@gmail.com'  
 EMAIL_HOST_PASSWORD = 'dsss dcic jlmj vtvu'  # App Password
+
+
+# مسیر فایل‌های استاتیک
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # مسیر فایل‌های استاتیک پروژه
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # مسیر جمع‌آوری فایل‌های استاتیک

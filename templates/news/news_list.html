@@ -1,44 +1,44 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>لیست اخبار</title>
-</head>
-<body>
-    <!-- عنوان صفحه -->
-    <h1>لیست اخبار</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-    <!-- فرم جست‌وجو -->
-    <form method="get" action="{% url 'news_list' %}">
-        <input type="text" name="q" value="{{ query }}" placeholder="جست‌وجو در اخبار...">
-        <button type="submit">جست‌وجو</button>
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h1 class="text-center">News List</h1>
+
+    <!-- Search Form -->
+    <form method="get" action="{% url 'news_list' %}" class="d-flex justify-content-center mb-4">
+        <input type="text" name="q" class="form-control w-50 me-2" value="{{ query }}" placeholder="Search in news...">
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    <!-- نمایش لیست اخبار -->
-    <h2>تمام اخبار</h2>
-    <ul>
+    <!-- All News -->
+    <h2 class="mt-4">All News</h2>
+    <ul class="list-group">
         {% for news in news_list %}
-            <li>
+            <li class="list-group-item">
                 <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
             </li>
         {% empty %}
-            <li>خبری یافت نشد.</li>
+            <li class="list-group-item">No news found.</li>
         {% endfor %}
     </ul>
 
-    <!-- نمایش جدیدترین اخبار -->
-    <h2>جدیدترین اخبار</h2>
-    <ul>
+    <!-- Latest News -->
+    <h2 class="mt-4">Latest News</h2>
+    <ul class="list-group">
         {% for news in latest_news %}
-            <li>
+            <li class="list-group-item">
                 <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
             </li>
         {% empty %}
-            <li>خبری یافت نشد.</li>
+            <li class="list-group-item">No news available.</li>
         {% endfor %}
     </ul>
 
-    <!-- لینک بازگشت به خانه -->
-    <a href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
-</body>
-</html>
+    <!-- Back to Home Link -->
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

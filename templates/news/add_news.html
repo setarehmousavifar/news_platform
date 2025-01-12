@@ -1,15 +1,22 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>افزودن خبر</title>
-</head>
-<body>
-    <h1>افزودن خبر جدید</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ثبت خبر</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h1 class="text-center">Add New News</h1>
+
+    <!-- Add News Form -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light shadow-sm">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit News</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

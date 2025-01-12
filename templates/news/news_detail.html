@@ -1,85 +1,108 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ news.title }}</title>
-</head>
-<body>
-    <h1>{{ news.title }}</h1>
-    <p>{{ news.content }}</p>
-    <p>تاریخ انتشار: {{ news.published_date }}</p>
-    <p>نویسنده: {{ news.author }}</p>
-    {% if news.image %}
-        <img src="{{ news.image.url }}" alt="{{ news.title }}" style="width: 300px; height: auto;">
-    {% endif %}
-    <a href="/news/">بازگشت به لیست اخبار</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
 
-<button id="like-button" data-news-id="{{ news.pk }}">
-    {% if user in news.likes.all %}
-        لغو لایک
-    {% else %}
-        لایک
-    {% endif %}
-</button>
-<p>تعداد لایک‌ها: {{ total_likes }}</p>
+{% block content %}
+<div class="container mt-5">
+    <!-- News Title -->
+    <h1 class="text-center">{{ news.title }}</h1>
+
+    <!-- News Content -->
+    <div class="mt-4">
+        <p>{{ news.content }}</p>
+        <p>Published Date: {{ news.published_date }}</p>
+        <p>Author: {{ news.author }}</p>
+        {% if news.image %}
+            <div class="text-center">
+                <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid" style="max-width: 300px; height: auto;">
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Like Button -->
+    <div class="mt-4 text-center">
+        <button id="like-button" data-news-id="{{ news.pk }}" class="btn btn-primary">
+            {% if user in news.likes.all %}
+                Unlike
+            {% else %}
+                Like
+            {% endif %}
+        </button>
+        <p>Total Likes: <span id="like-count">{{ total_likes }}</span></p>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="mt-5">
+        <h2>Comments</h2>
+        <ul class="list-group">
+            {% for comment in comments %}
+                <li class="list-group-item">
+                    <p>{{ comment.content }} - <b>{{ comment.user.username }}</b> ({{ comment.created_at }})</p>
+                    <!-- Reply Form -->
+                    <button class="btn btn-link" onclick="document.getElementById('parent-id-{{ comment.id }}').style.display='block';">Reply</button>
+                    <form method="post" style="display: none;" id="parent-id-{{ comment.id }}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <button type="submit" class="btn btn-secondary btn-sm">Submit Reply</button>
+                    </form>
+                    <!-- Replies -->
+                    {% if comment.replies.all %}
+                        <ul class="list-group mt-2">
+                            {% for reply in comment.replies.all %}
+                                <li class="list-group-item">
+                                    <p>{{ reply.content }} - <b>{{ reply.user.username }}</b> ({{ reply.created_at }})</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Add Comment Form -->
+        {% if user.is_authenticated %}
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        {% else %}
+            <p>Please log in to add a comment.</p>
+        {% endif %}
+    </div>
+
+    <!-- Related News -->
+    <div class="mt-5">
+        <h2>Related News</h2>
+        <ul class="list-group">
+            {% for related in related_news %}
+                <li class="list-group-item">
+                    <a href="{% url 'news_detail' related.id %}">{{ related.title }}</a>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No related news found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Views Count -->
+    <div class="text-center mt-4">
+        <p>Views: {{ news.views_count }}</p>
+    </div>
+</div>
 
 <script>
     document.getElementById('like-button').addEventListener('click', function() {
         const newsId = this.getAttribute('data-news-id');
-        fetch(`/news/${newsId}/like/`, { method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}'} })
+        fetch(`/news/${newsId}/like/`, { 
+            method: 'POST', 
+            headers: {'X-CSRFToken': '{{ csrf_token }}'} 
+        })
         .then(response => response.json())
         .then(data => {
             document.getElementById('like-count').innerText = data.total_likes;
-            this.innerText = data.liked ? 'لغو لایک' : 'لایک';
+            this.innerText = data.liked ? 'Unlike' : 'Like';
         });
     });
 </script>
-
-<h2>نظرات</h2>
-<ul>
-    {% for comment in comments %}
-        <li>
-            <p>{{ comment.content }} - <b>{{ comment.user.username }}</b> ({{ comment.created_at }})</p>
-            <button onclick="document.getElementById('parent-id-{{ comment.id }}').style.display='block';">ریپلای</button>
-            <form method="post" style="display: none;" id="parent-id-{{ comment.id }}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                <button type="submit">ارسال ریپلای</button>
-            </form>
-            {% if comment.replies.all %}
-                <ul>
-                    {% for reply in comment.replies.all %}
-                        <li>
-                            <p>{{ reply.content }} - <b>{{ reply.user.username }}</b> ({{ reply.created_at }})</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
-
-
-{% if user.is_authenticated %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ارسال نظر</button>
-    </form>
-{% else %}
-    <p>برای درج نظر، ابتدا وارد شوید.</p>
-{% endif %}
-
-<h2>اخبار مرتبط</h2>
-<ul>
-    {% for related in related_news %}
-        <li><a href="{% url 'news_detail' related.id %}">{{ related.title }}</a></li>
-    {% empty %}
-        <li>خبر مرتبطی یافت نشد.</li>
-    {% endfor %}
-</ul>
-
-<p>تعداد بازدید: {{ news.views_count }}</p>
+{% endblock %}

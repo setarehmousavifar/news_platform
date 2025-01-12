@@ -83,6 +83,6 @@ def admin_dashboard(request):
     return render(request, 'accounts/admin_dashboard.html')
 
 
-def some_view(request):
+def home_view(request):
     settings = SiteSettings.objects.first()  # دریافت اولین تنظیمات سایت
-    return render(request, 'template.html', {'settings': settings})
+    return render(request, 'home.html', {'settings': settings})

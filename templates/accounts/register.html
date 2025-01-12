@@ -1,25 +1,32 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ثبت‌نام</title>
-</head>
-<body>
-    <!-- عنوان صفحه -->
-    <h1>ثبت‌نام در سایت</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-    <!-- فرم ثبت‌نام -->
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ثبت‌نام</button>
-    </form>
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h1 class="text-center">Register</h1>
 
-    <!-- پیام ورود -->
-    <p>اگر حساب کاربری دارید، از <a href="{% url 'login' %}">اینجا</a> وارد شوید.</p>
+    <!-- Registration Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="p-4 border rounded bg-light shadow-sm">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <!-- لینک بازگشت -->
-    <a href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
-</body>
-</html>
+    <!-- Login Prompt -->
+    <div class="text-center mt-3">
+        <p>If you already have an account, <a href="{% url 'login' %}">login here</a>.</p>
+    </div>
+
+    <!-- Back to Home Link -->
+    <div class="text-center mt-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

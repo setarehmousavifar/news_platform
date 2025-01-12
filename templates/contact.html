@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>تماس با ما</title>
-</head>
-<body>
-    <h1>تماس با ما</h1>
-    <p>اینجا صفحه "تماس با ما" است. اطلاعات تماس را اینجا بنویسید.</p>
-    <a href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h1 class="text-center">Contact Us</h1>
+
+    <!-- Contact Information -->
+    <p class="text-center mt-3">This is the "Contact Us" page. Write your contact information here.</p>
+
+    <!-- Back to Home Link -->
+    <div class="text-center mt-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

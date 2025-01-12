@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>درباره ما</title>
-</head>
-<body>
-    <h1>درباره ما</h1>
-    <p>اینجا صفحه "درباره ما" است. اطلاعات مربوط به سایت را اینجا بنویسید.</p>
-    <a href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h1 class="text-center">About Us</h1>
+
+    <!-- About Information -->
+    <p class="text-center mt-3">This is the "About Us" page. Write information about the site here.</p>
+
+    <!-- Back to Home Link -->
+    <div class="text-center mt-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

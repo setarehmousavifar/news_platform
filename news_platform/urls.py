@@ -20,9 +20,10 @@ from news.views import home
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from accounts.views import home_view
 
 urlpatterns = [
-    path('', home, name='home'),  # مسیر صفحه اصلی
+    path('', home_view, name='home'),  # مسیر صفحه اصلی
     path('news/', include('news.urls')),  # مسیر اپلیکیشن news
     path('accounts/', include('accounts.urls')),  # مسیر اپلیکیشن accounts
     path('admin/', admin.site.urls),

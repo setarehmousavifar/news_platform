@@ -21,6 +21,7 @@ class SiteSettings(models.Model):
     site_name = models.CharField(max_length=225, verbose_name="نام سایت")  # نام سایت
     logo = models.ImageField(upload_to='logos/', null=True, blank=True, verbose_name="لوگو")  # لوگوی سایت
     default_email = models.EmailField(null=True, blank=True, verbose_name="ایمیل پیش‌فرض")  # ایمیل پیش‌فرض
+    phone_number = models.CharField(max_length=15, default=00000000000, verbose_name="شماره تماس")
     footer_text = models.TextField(null=True, blank=True, verbose_name="متن فوتر")  # متن فوتر سایت
     description = models.TextField(verbose_name="توضیحات")  # توضیحات سایت
 
