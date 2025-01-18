@@ -3,11 +3,67 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Edit News</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Update</button>
-    </form>
+    <!-- Page Title -->
+    <h2 class="text-center mb-4">Edit News</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Form Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white"><i class="fas fa-heading"></i></span>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Enter the title" value="{{ news.title }}" required>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="5" placeholder="Write your news content here..." required>{{ news.content }}</textarea>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label for="categories" class="form-label">Categories</label>
+                            <select id="categories" name="categories" class="form-control select2" multiple>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category in news.categories.all %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            {% if news.image %}
+                                <p>Currently: <a href="{{ news.image.url }}">{{ news.image.name }}</a></p>
+                            {% endif %}
+                            <input type="file" class="form-control" id="image" name="image">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'news_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select categories",
+            allowClear: true
+        });
+    });
+</script>
 {% endblock %}
+

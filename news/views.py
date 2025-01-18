@@ -62,14 +62,17 @@ def create_news(request):
 @user_passes_test(admin_required)
 def edit_news(request, pk):
     news = get_object_or_404(News, pk=pk)
-    if request.method == 'POST':
-        form = NewsForm(request.POST, request.FILES, instance=news)
-        if form.is_valid():
-            form.save()
-            return redirect('news_list')
+    if request.user.is_superuser or request.user == news.author:
+        if request.method == 'POST':
+            form = NewsForm(request.POST, request.FILES, instance=news)
+            if form.is_valid():
+                form.save()
+                return redirect('news_detail', pk=news.pk)
+        else:
+            form = NewsForm(instance=news)
+        return render(request, 'news/edit_news.html', {'form': form, 'news': news})
     else:
-        form = NewsForm(instance=news)
-    return render(request, 'news/edit_news.html', {'form': form})
+        return redirect('news_list')  # اگر دسترسی نداشت، هدایت به صفحه اصلی
 
 @login_required
 @user_passes_test(admin_required)
