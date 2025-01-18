@@ -18,6 +18,14 @@
         {% endif %}
     </div>
 
+    <!-- News Category -->
+    <h5>Categories:</h5>
+    <ul>
+    {% for category in news.categories.all %}
+        <li>{{ category.name }}</li>
+    {% endfor %}
+    </ul>
+
     <!-- Like Button -->
     <div class="mt-4 text-center">
         <button id="like-button" data-news-id="{{ news.pk }}" class="btn btn-primary">

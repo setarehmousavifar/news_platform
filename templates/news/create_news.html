@@ -3,11 +3,69 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Create News</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Create</button>
-    </form>
+    <!-- Page Title -->
+    <h2 class="text-center mb-4">Create News</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Form Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white"><i class="fas fa-heading"></i></span>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Enter the title" required>
+                                <div class="invalid-feedback">Please provide a title.</div>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="5" placeholder="Write your news content here..." required></textarea>
+                            <div class="invalid-feedback">Please provide the content.</div>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="mb-3">
+                            <label for="categories" class="form-label">Categories</label>
+                            <select id="categories" name="categories" class="form-select select2" multiple>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple categories.</small>
+                        </div>
+                        
+                        <!-- Image -->
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-control" id="image" name="image">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Select2 Activation -->
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select categories",
+            allowClear: true
+        });
+    });
+</script>
 {% endblock %}

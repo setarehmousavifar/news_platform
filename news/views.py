@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.views import admin_required, super_admin_required
 from .forms import NewsForm
-from .models import News
+from .models import News, Category
 from django.http import JsonResponse
 from interactions.forms import CommentForm
 from interactions.models import Comment
@@ -33,15 +33,30 @@ def admin_required(user):
 @user_passes_test(admin_required)
 def create_news(request):
     if request.method == 'POST':
-        form = NewsForm(request.POST, request.FILES)
-        if form.is_valid():
-            news = form.save(commit=False)
-            news.author = request.user
-            news.save()
-            return redirect('news_list')  # بعد از ثبت خبر به لیست اخبار برگردد
-    else:
-        form = NewsForm()
-    return render(request, 'news/create_news.html', {'form': form})
+        title = request.POST['title']
+        content = request.POST['content']
+        category_ids = request.POST.getlist('categories')  # دریافت لیست ID دسته‌بندی‌ها
+        image = request.FILES.get('image')
+
+        # ایجاد خبر
+        news = News.objects.create(
+            title=title,
+            content=content,
+            author=request.user,
+            image=image
+        )
+
+        # اضافه کردن دسته‌بندی‌ها به خبر
+        if category_ids:
+            categories = Category.objects.filter(id__in=category_ids)
+            news.categories.set(categories)
+
+        news.save()
+        return redirect('news_list')
+
+    categories = Category.objects.all()  # گرفتن لیست دسته‌بندی‌ها
+    return render(request, 'news/create_news.html', {'categories': categories})
+
 
 @login_required
 @user_passes_test(admin_required)
@@ -99,7 +114,7 @@ def like_news(request, news_id):
 # نمایش جزئیات خبر
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
-    related_news = News.objects.filter(category=news.category).exclude(id=news.id)[:5]  # 5 خبر مرتبط
+    related_news = News.objects.filter(categories__in=news.categories.all()).exclude(id=news.id)[:5]  # 5 خبر مرتبط
     news.views_count += 1
     news.save()
     comments = Comment.objects.filter(news=news, parent=None)  # نظرات اصلی
