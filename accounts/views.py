@@ -10,6 +10,7 @@ from .forms import UserProfileForm
 from accounts.decorators import super_admin_required
 from .models import CustomUser
 from .forms import UserEditForm
+from .forms import EditUserRoleForm
 
 # فقط سوپریوزرها اجازه دارند به این ویو دسترسی پیدا کنند
 def super_admin_required(user):
@@ -40,8 +41,23 @@ def delete_user(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if request.method == 'POST':
         user.delete()
+        messages.success(request, "User deleted successfully!")
         return redirect('manage_users')
     return render(request, 'accounts/delete_user.html', {'user': user})
+
+@login_required
+@user_passes_test(super_admin_required)
+def edit_user_role(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.method == 'POST':
+        form = EditUserRoleForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User role updated successfully!")
+            return redirect('manage_users')
+    else:
+        form = EditUserRoleForm(instance=user)
+    return render(request, 'accounts/edit_user_role.html', {'form': form, 'user': user})
 
 # نمایش و مدیریت فرم ثبت‌نام
 def register(request):

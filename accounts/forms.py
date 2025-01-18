@@ -42,3 +42,12 @@ class SiteSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
         fields = ['site_name', 'footer_text']
+
+
+class EditUserRoleForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['user_type']
+        widgets = {
+            'user_type': forms.Select(attrs={'class': 'form-control'}),
+        }
