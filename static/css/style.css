@@ -130,3 +130,75 @@ footer {
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-color);
 }
+
+.comments-section .list-group-item {
+    background-color: #f8f9fa;
+    border: none;
+}
+
+.comments-section .btn-link {
+    font-size: 0.9rem;
+}
+
+.comments-section .btn-primary {
+    background-color: #ffc964;
+    border-color: #ffa718;
+}
+
+.comments-section .border-start {
+    border-left: 3px solid #ffa600;
+}
+
+/* استایل کلی برای بخش کامنت‌ها */
+.comments-section {
+    background-color: #faf9f8; /* رنگ پس‌زمینه */
+    border-radius: 5px; /* گوشه‌های گرد */
+    padding: 15px;
+}
+
+/* استایل هر کامنت */
+.comment-item, .reply-item {
+    border-bottom: 1px solid #d8b09c; /* خط جداکننده */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* حذف خط جداکننده برای آخرین کامنت */
+.comment-item:last-child, .reply-item:last-child {
+    border-bottom: none;
+}
+
+/* استایل متن کامنت‌ها */
+.comment-content, .reply-content {
+    font-size: 0.9rem; /* اندازه متن */
+    color: #333; /* رنگ متن */
+    margin-top: 5px;
+}
+
+/* استایل دکمه ریپلای */
+.reply-button {
+    font-size: 0.8rem; /* کوچک‌تر کردن اندازه دکمه */
+    color: #ff8c00; /* رنگ آبی */
+    cursor: pointer; /* نشانگر موس */
+}
+
+.reply-button:hover {
+    text-decoration: underline; /* زیرخط هنگام هاور */
+}
+
+/* استایل فرم ریپلای */
+.reply-form textarea {
+    font-size: 0.8rem;
+}
+
+/* دکمه اضافه کردن کامنت */
+.add-comment button {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+}
+
+/* استایل باکس نوشتن کامنت */
+#add-comment-form textarea {
+    font-size: 0.9rem;
+    height: 100px;
+}

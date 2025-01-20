@@ -22,3 +22,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// نمایش یا پنهان کردن فرم ریپلای
+function toggleReplyForm(commentId) {
+    const form = document.getElementById(`reply-form-${commentId}`);
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+// نمایش یا پنهان کردن فرم اضافه کردن کامنت
+function toggleAddComment() {
+    const form = document.getElementById('add-comment-form');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
