@@ -6,39 +6,69 @@
     <!-- Page Title -->
     <h1 class="text-center">News List</h1>
 
-    <!-- Search Form -->
-    <form method="get" action="{% url 'news_list' %}" class="d-flex justify-content-center mb-4">
-        <input type="text" name="q" class="form-control w-50 me-2" value="{{ query }}" placeholder="Search in news...">
-        <button type="submit" class="btn btn-primary">Search</button>
+    <!-- Search and Filter Form -->
+    <form method="get" action="{% url 'news_list' %}" class="d-flex justify-content-between mb-4">
+        <input type="text" name="q" class="form-control w-50 me-2" value="{{ query }}" placeholder="Search news...">
+        <select name="category" class="form-select me-2">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success">Search</button>
     </form>
 
-    <!-- All News -->
-    <h2 class="mt-4">All News</h2>
-    <ul class="list-group">
-        {% for news in news_list %}
-            <li class="list-group-item">
-                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
-            </li>
-        {% empty %}
-            <li class="list-group-item">No news found.</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Latest News -->
-    <h2 class="mt-4">Latest News</h2>
-    <ul class="list-group">
-        {% for news in latest_news %}
-            <li class="list-group-item">
-                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
-            </li>
-        {% empty %}
-            <li class="list-group-item">No news available.</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Back to Home Link -->
-    <div class="text-center mt-4">
-        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+    <!-- Sort Options -->
+    <div class="sort-options mb-4 text-end">
+        <a href="?sort=latest" class="btn btn-outline-primary me-2">Latest</a>
+        <a href="?sort=popular" class="btn btn-outline-primary">Most Popular</a>
     </div>
+
+    <!-- News Cards -->
+    <div class="row">
+        {% for news in news_list %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                {% if news.image %}
+                <img src="{{ news.image.url }}" class="card-img-top" alt="{{ news.title }}">
+                {% else %}
+                <img src="{% static 'default_news_image.jpg' %}" class="card-img-top" alt="Default image">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ news.title }}</h5>
+                    <p class="card-text text-muted">{{ news.content|slice:":150" }}...</p>
+                    <a href="{% url 'news_detail' news.id %}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-warning" role="alert">
+            No news found. Please check back later.
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if news.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ news.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for num in news.paginator.page_range %}
+            <li class="page-item {% if news.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if news.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ news.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endblock %}

@@ -38,19 +38,22 @@
                                     <option value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
                             </select>
-                            <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple categories.</small>
                         </div>
                         
                         <!-- Image -->
                         <div class="mb-3">
                             <label for="image" class="form-label">Image</label>
-                            <input type="file" class="form-control" id="image" name="image">
+                            <input type="file" class="form-control" id="image" name="image" onchange="previewImage(event)">
+                            <img id="image-preview" src="#" alt="Preview" style="display: none; max-width: 100%; margin-top: 10px;">
                         </div>
 
                         <!-- Buttons -->
                         <div class="d-flex justify-content-between">
                             <button type="reset" class="btn btn-outline-secondary">Reset</button>
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-info me-2" onclick="showPreview()">Preview</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -58,6 +61,26 @@
         </div>
     </div>
 </div>
+
+<!-- Image Preview -->
+<script>
+    function previewImage(event) {
+        const output = document.getElementById('image-preview');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.style.display = 'block';
+    }
+</script>
+
+<!-- Preview Button -->
+<script>
+    function showPreview() {
+        const title = document.querySelector('input[name="title"]').value;
+        const content = tinymce.get('editor').getContent();
+        const previewWindow = window.open('', '_blank');
+        previewWindow.document.write(`<h1>${title}</h1>`);
+        previewWindow.document.write(content);
+    }
+</script>
 
 <!-- Select2 Activation -->
 <script>

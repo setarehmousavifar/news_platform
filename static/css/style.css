@@ -202,3 +202,26 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.9rem;
     height: 100px;
 }
+
+.card {
+    transition: transform 0.2s ease-in-out;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+  }
+  
+.card:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease-in-out;
+}
+
+.pagination .active .page-link {
+    background-color: #ff9900;
+    border-color: #ff9900;
+    color: white;
+}

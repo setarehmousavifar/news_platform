@@ -9,7 +9,10 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import NewsSerializer
+from django.core.paginator import Paginator
+import logging
 
+logger = logging.getLogger(__name__)
 # صفحه اصلی
 def home(request):
     query = request.GET.get('q')  # گرفتن ورودی جست‌وجو از URL
@@ -20,6 +23,9 @@ def home(request):
     else:
         news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
     
+    logger.info(f"Latest News Count: {latest_news.count()}")
+    logger.info(f"News List Count: {news_list.count()}")
+
     latest_news = News.objects.order_by('-published_date')[:10]  # 10 خبر اخیر
     return render(request, 'home.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
 
@@ -86,18 +92,36 @@ def delete_news(request, pk):
 # نمایش لیست اخبار
 def news_list(request):
     query = request.GET.get('q')  # گرفتن ورودی جست‌وجو از URL
+    category_id = request.GET.get('category')
+    sort = request.GET.get('sort')
     if query:
         news_list = News.objects.filter(
             Q(title__icontains=query) | Q(content__icontains=query)  # جست‌وجو در عنوان و متن
         )
+    if category_id:
+        news_list = news_list.filter(categories__id=category_id)
+
+    if sort == 'latest':
+        news_list = news_list.order_by('-published_date')
+    elif sort == 'popular':
+        news_list = news_list.order_by('-views_count')
+        
     else:
         news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
 
     if request.user.user_type == 'admin':
         news_list = News.objects.filter(author=request.user)
 
+    # صفحه‌بندی
+    paginator = Paginator(news_list, 6)  # نمایش 6 خبر در هر صفحه
+    page = request.GET.get('page')
+    news = paginator.get_page(page)
+
+    categories = Category.objects.all()
+
     latest_news = News.objects.order_by('-published_date')[:10]  # 10 خبر اخیر
-    return render(request, 'news/news_list.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
+
+    return render(request, 'news/news_list.html', {'news_list': news_list, 'categories': categories, 'latest_news': latest_news, 'query': query})
 
 
 # نمایش جزئیات خبر

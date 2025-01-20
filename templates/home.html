@@ -12,7 +12,7 @@
                         <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
                     </li>
                 {% empty %}
-                    <li class="list-group-item">No news found.</li>
+                    <li class="list-group-item">No news found, Please check back later.</li>
                 {% endfor %}
             </ul>
             <div class="text-center mt-4">
