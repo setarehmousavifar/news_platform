@@ -34,15 +34,33 @@
 
     <!-- Like Button -->
     <div class="mt-4 text-center">
-        <button id="like-button" data-news-id="{{ news.pk }}" class="btn btn-primary">
-            {% if user in news.likes.all %}
+        <button id="like-button" data-news-id="{{ news.id }}" class="btn btn-primary">
+            {% if user in news.liked_by.all %}
                 Unlike
             {% else %}
                 Like
             {% endif %}
         </button>
-        <p>Total Likes: <span id="like-count">{{ total_likes }}</span></p>
+        <p>Total Likes: <span id="like-count">{{ news.total_likes }}</span></p>
     </div>
+
+    <script>
+        document.getElementById('like-button').addEventListener('click', function() {
+            const newsId = this.getAttribute('data-news-id');
+            fetch(`/interactions/news/${newsId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('like-count').innerText = data.total_likes;
+                this.innerText = data.liked ? 'Unlike' : 'Like';
+            });
+        });
+    </script>
+
 
     <!-- Comments Section -->
     <div class="mt-5">

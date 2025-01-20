@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.views import admin_required, super_admin_required
 from .forms import NewsForm
 from .models import News, Category
-from django.http import JsonResponse
 from interactions.forms import CommentForm
 from interactions.models import Comment
 from django.db.models import Q
@@ -101,27 +100,14 @@ def news_list(request):
     return render(request, 'news/news_list.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
 
 
-# View برای لایک کردن خبر
-@login_required
-def like_news(request, news_id):
-    news = get_object_or_404(News, id=news_id)
-    if request.user in news.likes.all():
-        news.likes.remove(request.user)  # اگر قبلاً لایک شده، حذف لایک
-        liked = False
-    else:
-        news.likes.add(request.user)  # اگر لایک نشده، اضافه کن
-        liked = True
-    return JsonResponse({'liked': liked, 'total_likes': news.likes.count()})
-
-
 # نمایش جزئیات خبر
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)  # پیدا کردن خبر بر اساس شناسه
+    total_likes = news.liked_by.count()  # تعداد لایک‌ها
     related_news = News.objects.filter(categories__in=news.categories.all()).exclude(id=news.id)[:5]  # 5 خبر مرتبط
     news.views_count += 1
     news.save()
     comments = Comment.objects.filter(news=news, parent=None)  # نظرات اصلی
-    total_likes = news.likes.count()  # تعداد لایک‌ها
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -135,7 +121,7 @@ def news_detail(request, pk):
             return redirect('news_detail', pk=news.pk)  # بازگشت به صفحه جزئیات خبر
     else:
         form = CommentForm()
-    return render(request, 'news/news_detail.html', {'news': news, 'related_news': related_news, 'comments': comments, 'form': form, 'total_likes': total_likes})
+    return render(request, 'news/news_detail.html', {'news': news, 'total_likes': total_likes, 'related_news': related_news, 'comments': comments, 'form': form})
 
 
 @api_view(['GET'])

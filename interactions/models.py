@@ -15,12 +15,16 @@ class Comment(models.Model):
 # Like Model
 class Like(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="likes", verbose_name="User")
-    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name="likes", verbose_name="News")
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name="liked_by", verbose_name="News")
 
     class Meta:
-        unique_together = ('user', 'news')
+        unique_together = ('user', 'news')  # هر کاربر فقط یک بار می‌تواند یک خبر را لایک کند
+        verbose_name = "Like"
+        verbose_name_plural = "Likes"
 
-    def __str__(self): return f"{self.user.username} liked {self.news.title}"
+    def __str__(self):
+        return f"{self.user.username} liked {self.news.title}"
+
 
 # CommentLike Model
 class CommentLike(models.Model):

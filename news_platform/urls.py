@@ -26,6 +26,7 @@ urlpatterns = [
     path('', home_view, name='home'),  # مسیر صفحه اصلی
     path('news/', include('news.urls')),  # مسیر اپلیکیشن news
     path('accounts/', include('accounts.urls')),  # مسیر اپلیکیشن accounts
+    path('interactions/', include('interactions.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('news.api_urls')),  # آدرس‌های API
     path('about/', TemplateView.as_view(template_name="about.html"), name='about'),  # صفحه درباره ما

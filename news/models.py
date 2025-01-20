@@ -20,4 +20,8 @@ class News(models.Model):
     video = models.FileField(upload_to='news_videos/', blank=True, verbose_name="Video")
     views_count = models.IntegerField(default=0, verbose_name="Views Count")
 
+    def total_likes(self):
+        """تعداد کل لایک‌های این خبر"""
+        return self.liked_by.count()
+
     def __str__(self): return self.title
