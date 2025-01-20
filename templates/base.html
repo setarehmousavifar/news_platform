@@ -8,13 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<body>
+</head>
+<body class="day-mode">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-orange shadow">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home' %}">{{ settings.site_name }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,32 +23,34 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'about' %}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'contact' %}">Contact</a></li>
                 </ul>
                 <!-- Search Form -->
                 <form class="d-flex" method="get" action="{% url 'home' %}">
                     <input class="form-control me-2" type="search" name="q" placeholder="Search..." aria-label="Search" value="{{ query }}">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
+                    <button class="btn btn-light" type="submit">Search</button>
                 </form>
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         {% if user.user_type == 'admin' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'create_news' %}">Create News</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'news_list' %}">Manage News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'create_news' %}">Create News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'news_list' %}">Manage News</a></li>
                         {% elif user.user_type == 'super_admin' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'manage_users' %}">Manage Users</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'create_news' %}">Create News</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'news_list' %}">Manage News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'manage_users' %}">Manage Users</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'create_news' %}">Create News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'news_list' %}">Manage News</a></li>
                         {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'profile' %}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">SignUp</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'register' %}">SignUp</a></li>
                     {% endif %}
                 </ul>
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="btn btn-sm btn-light ms-3">Night</button>
             </div>
         </div>
     </nav>
@@ -63,23 +66,23 @@
         <p>Email: {{ settings.default_email }} | Phone: {{ settings.phone_number }}</p>
     </footer>
 
-<!-- Toast Container for Messages -->
-<div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 1050;">
-    <div class="toast-container position-fixed top-0 end-0 p-3">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="toast align-items-center text-white {% if message.tags == 'success' %}bg-success{% elif message.tags == 'error' %}bg-danger{% elif message.tags == 'warning' %}bg-warning{% else %}bg-info{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            {{ message }}
+    <!-- Toast Container for Messages -->
+    <div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 1050;">
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="toast align-items-center text-white {% if message.tags == 'success' %}bg-success{% elif message.tags == 'error' %}bg-danger{% elif message.tags == 'warning' %}bg-warning{% else %}bg-info{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
-                </div>
-            {% endfor %}
-        {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
-</div>
-
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
 </body>
 </html>
