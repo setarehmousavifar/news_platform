@@ -1,0 +1,87 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+/media/
+staticfiles/
+static/
+local_settings.py
+*.swp
+.env
+
+# Virtual Environment
+venv/
+.venv/
+
+# Docker
+.dockerignore
+.docker/
+*.pid
+*.log
+docker-compose.override.yml
+
+# System files
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# MySQL
+*.sql
+*.dump
+
+# Cache Files
+.cache/
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# Git
+*.orig
+*.lock
+*.bak
+*.old
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# Others
+*.bak
+*.out
+*.pid
+*.seed
+*.log
+
+# Test Results
+junit*.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.nox/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
