@@ -14,6 +14,7 @@ class News(models.Model):
     content = models.TextField(verbose_name="Content")
     published_date = models.DateTimeField(auto_now_add=True, verbose_name="Published Date")
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="news", verbose_name="Author")
+    likes = models.IntegerField(default=0)
     likes_count = models.IntegerField(default=0, verbose_name="Likes Count")
     categories = models.ManyToManyField(Category, verbose_name="Categories")
     image = models.ImageField(upload_to='news_images/', blank=True, verbose_name="Image")
