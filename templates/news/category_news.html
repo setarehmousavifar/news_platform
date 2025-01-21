@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Category: {{ category_name }}</h2>
+    <ul class="list-group">
+        {% for news in news_list %}
+            <li class="list-group-item">
+                <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No news available in this category.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

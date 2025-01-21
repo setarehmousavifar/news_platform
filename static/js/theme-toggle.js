@@ -34,3 +34,27 @@ function toggleAddComment() {
     const form = document.getElementById('add-comment-form');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleButton = document.getElementById("theme-toggle");
+    const icon = toggleButton.querySelector("i");
+
+    function updateIcon() {
+        if (document.body.classList.contains("day-mode")) {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+        } else {
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+        }
+    }
+
+    toggleButton.addEventListener("click", function () {
+        document.body.classList.toggle("day-mode");
+        document.body.classList.toggle("night-mode");
+        updateIcon();
+    });
+
+    // Set initial icon
+    updateIcon();
+});

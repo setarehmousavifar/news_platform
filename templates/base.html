@@ -22,35 +22,66 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'about' %}">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'contact' %}">Contact</a></li>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-nowrap small" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-nowrap small" href="{% url 'about' %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-nowrap small" href="{% url 'category_news' 'breaking_news' %}">Breaking News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-nowrap small" href="{% url 'category_news' 'technology' %}">Technology</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-nowrap small" href="{% url 'category_news' 'health' %}">Health</a>
+                    </li>
+                    <!-- Dropdown for More Categories -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white small" href="#" id="moreCategoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="moreCategoriesDropdown">
+                            {% for category in more_categories %}
+                            <li>
+                                <a class="dropdown-item text-nowrap small" href="{% url 'category_news' category.name %}">{{ category.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 </ul>
                 <!-- Search Form -->
-                <form class="d-flex" method="get" action="{% url 'home' %}">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search..." aria-label="Search" value="{{ query }}">
-                    <button class="btn btn-light" type="submit">Search</button>
+                <form class="d-flex align-items-center" method="get" action="{% url 'news_list' %}">
+                    <div class="input-group">
+                        <input class="form-control form-control-sm" type="search" placeholder="Search" name="q" aria-label="Search">
+                        <button class="btn btn-outline-light btn-sm" type="submit">
+                            <i class="fas fa-search"></i> <!-- آیکون ذره‌بین -->
+                        </button>
+                    </div>
                 </form>
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         {% if user.user_type == 'admin' %}
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'create_news' %}">Create News</a></li>
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'news_list' %}">Manage News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'create_news' %}">Create News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'news_list' %}">Manage News</a></li>
                         {% elif user.user_type == 'super_admin' %}
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'manage_users' %}">Manage Users</a></li>
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'create_news' %}">Create News</a></li>
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'news_list' %}">Manage News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'manage_users' %}">Manage Users</a></li>
+                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'create_news' %}">Create News</a></li>
+                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'news_list' %}">Manage News</a></li>
                         {% endif %}
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'profile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'logout' %}">Logout</a></li>
+                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'profile' %}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'register' %}">SignUp</a></li>
+                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'register' %}">SignUp</a></li>
                     {% endif %}
                 </ul>
                 <!-- Theme Toggle -->
-                <button id="theme-toggle" class="btn btn-sm btn-light ms-3">Night</button>
+                <button id="theme-toggle" class="btn btn-sm btn-light ms-3">
+                    <i class="fas fa-sun"></i> <!-- آیکون خورشید -->
+                </button>
             </div>
         </div>
     </nav>

@@ -23,11 +23,17 @@ def home(request):
     else:
         news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
     
+    categories = Category.objects.all()
+    news_list = News.objects.filter(categories__in=categories) 
+
+    main_categories = categories[:3]  # سه دسته اصلی
+    more_categories = categories[3:]  # باقی دسته‌بندی‌ها
+
     logger.info(f"Latest News Count: {latest_news.count()}")
     logger.info(f"News List Count: {news_list.count()}")
 
     latest_news = News.objects.order_by('-published_date')[:10]  # 10 خبر اخیر
-    return render(request, 'home.html', {'news_list': news_list, 'latest_news': latest_news, 'query': query})
+    return render(request, 'home.html', {'main_categories': main_categories, 'more_categories': more_categories, 'news_list': news_list, 'latest_news': latest_news, 'query': query})
 
 
 # فقط ادمین‌ها و سوپریوزرها اجازه دارند به این ویو دسترسی پیدا کنند
@@ -109,9 +115,6 @@ def news_list(request):
     else:
         news_list = News.objects.all()  # نمایش تمام اخبار در صورت نبود جست‌وجو
 
-    if request.user.user_type == 'admin':
-        news_list = News.objects.filter(author=request.user)
-
     # صفحه‌بندی
     paginator = Paginator(news_list, 6)  # نمایش 6 خبر در هر صفحه
     page = request.GET.get('page')
@@ -159,3 +162,8 @@ def news_detail_api(request, pk):
     news = News.objects.get(pk=pk)
     serializer = NewsSerializer(news)
     return Response(serializer.data)
+
+
+def category_news(request, category_name):
+    news_list = News.objects.filter(categories__name__iexact=category_name)
+    return render(request, 'news/category_news.html', {'news_list': news_list, 'category_name': category_name})
