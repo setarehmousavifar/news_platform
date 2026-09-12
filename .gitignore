@@ -11,77 +11,71 @@ build/
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Django
+# Django / secrets
 *.log
 *.pot
-*.pyc
 *.sqlite3
 db.sqlite3
 db.sqlite3-journal
-/media/
-staticfiles/
-static/
 local_settings.py
-*.swp
 .env
 
-# Virtual Environment
+# Collected static (keep source `static/` tracked)
+staticfiles/
+
+# Uploaded media (keep folder via media/.gitkeep)
+media/*
+!media/.gitkeep
+
+# Virtual environments (never ship these)
 venv/
 .venv/
+.env/
+.wheels/
+news_platform/Lib/
+news_platform/Scripts/
+news_platform/pyvenv.cfg
+news_platform/Include/
 
-# Docker
-.dockerignore
-.docker/
-*.pid
-*.log
+# Logs
+logs/*.log
+!logs/.gitkeep
+
+# Docker overrides
 docker-compose.override.yml
+*.pid
 
-# System files
+# System / IDE
 Thumbs.db
-
-# IDEs
+Desktop.ini
+.DS_Store
 .vscode/
 .idea/
 *.iml
+*.swp
+*.swo
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
 
-# MySQL
+# Local dumps
 *.sql
 *.dump
 
-# Cache Files
+# Tests / coverage
 .cache/
-*.swp
-*.swo
-*.tmp
-*.temp
-
-# Git
-*.orig
-*.lock
-*.bak
-*.old
-*.swp
-*.swo
-*.tmp
-*.temp
-
-# Others
-*.bak
-*.out
-*.pid
-*.seed
-*.log
-
-# Test Results
+.pytest_cache/
+.hypothesis/
+.nox/
+.coverage
+htmlcov/
 junit*.xml
 coverage.xml
 *.cover
-.hypothesis/
-.pytest_cache/
-.nox/
 
-# Node.js
+# Node (not used, ignore if present)
 node_modules/
 npm-debug.log
 yarn-error.log
-.pnpm-debug.log
