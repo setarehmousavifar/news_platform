@@ -8,23 +8,62 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      meilisearch:
+        condition: service_started
     environment:
-      - DJANGO_SETTINGS_MODULE=news_platform.settings
+      - DJANGO_SETTINGS_MODULE=news_platform.settings.dev
+      - SECRET_KEY=change-me-docker-dev-key-at-least-50-characters-long
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - DB_ENGINE=django.db.backends.mysql
+      - DB_NAME=news_platform
+      - DB_USER=root
+      - DB_PASSWORD=1111
+      - DB_HOST=db
+      - DB_PORT=3306
+      - REDIS_URL=redis://redis:6379/1
+      - MEILI_URL=http://meilisearch:7700
+      - MEILI_MASTER_KEY=news_platform_meili_master_key
     command: >
       bash -c "python manage.py migrate &&
+               python manage.py seed_premium --purge --skip-translate &&
+               python manage.py rebuild_search_index &&
                python manage.py runserver 0.0.0.0:8000"
 
   db:
-    image: postgres:14
+    image: mysql:8.0
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 1111
-      POSTGRES_DB: django_db
+      MYSQL_ROOT_PASSWORD: 1111
+      MYSQL_DATABASE: news_platform
     ports:
-      - "5432:5432"
+      - "3307:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p1111"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    environment:
+      MEILI_MASTER_KEY: news_platform_meili_master_key
+      MEILI_ENV: development
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili_data:/meili_data
 
 volumes:
-  postgres_data:
+  mysql_data:
+  meili_data:
