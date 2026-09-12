@@ -1,147 +1,361 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
+{% load news_extras %}
+{% get_current_language as LANG %}
+
+{% block title %}{{ news|localized_title }} — {{ settings.site_name }}{% endblock %}
+{% block meta_description %}{{ news|localized_content|truncate_meta:160 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ news|localized_title }}{% endblock %}
+{% block og_description %}{{ news|localized_content|truncate_meta:160 }}{% endblock %}
+{% block twitter_title %}{{ news|localized_title }}{% endblock %}
+{% block twitter_description %}{{ news|localized_content|truncate_meta:160 }}{% endblock %}
+{% block og_image %}{% if news.image %}{% absolute_url news.image.url %}{% else %}{% absolute_url '/static/images/default_news_image.jpg' %}{% endif %}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+{% if news.image %}
+<link rel="preload" as="image" href="{{ news.image.url }}" fetchpriority="high">
+{% endif %}
+{% endblock %}
+
+{% block structured_data %}
+{% absolute_url as page_url %}
+{% if news.image %}
+{% absolute_url news.image.url as article_image %}
+{% news_article_jsonld news page_url article_image %}
+{% else %}
+{% news_article_jsonld news page_url %}
+{% endif %}
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- News Header with Image -->
-    <div class="news-header text-center">
-        <!-- تصویر خبر -->
-        <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid" style="width: 100%; max-height: 400px; object-fit: cover;">
-    
-        <!-- اطلاعات خبر زیر تصویر -->
-        <div class="news-info text-center py-3" style="background-color: #f8f9fa;">
-            <h1 class="fw-bold">{{ news.title }}</h1>
-            <p class="text-muted">
-                Published on: <span>{{ news.published_date|date:"F j, Y, g:i a" }}</span> | 
-                Author: <span class="fw-bold">{{ news.author }}</span>
-            </p>
-        </div>
-    </div>
-    
-    <!-- Edit Button for Admin and Super Admin -->
-    {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user == news.author %}
-    <div class="text-center mt-3">
-        <a href="{% url 'edit_news' news.id %}" class="btn btn-warning">Edit</a>
-    </div>
-    {% endif %}
+<div class="article-read-progress" aria-hidden="true">
+    <span class="article-read-progress__bar" data-reading-progress></span>
+</div>
 
-    <!-- News Content -->
-    <div class="news-content mt-4">
-        <p>{{ news.content }}</p>
-        <h5>Categories:</h5>
-        <ul class="list-inline">
-            {% for category in news.categories.all %}
-            <li class="list-inline-item badge bg-primary text-white">{{ category.name }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- Like Button -->
-    <div class="mt-4 text-center">
-        <button id="like-button" data-news-id="{{ news.id }}" class="btn btn-primary">
-            {% if user in news.liked_by.all %}
-                Unlike
-            {% else %}
-                Like
-            {% endif %}
-        </button>
-        <p>Total Likes: <span id="like-count">{{ news.total_likes }}</span></p>
-    </div>
-
-    <script>
-        document.getElementById('like-button').addEventListener('click', function() {
-            const newsId = this.getAttribute('data-news-id');
-            fetch(`/interactions/news/${newsId}/like/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('like-count').innerText = data.total_likes;
-                this.innerText = data.liked ? 'Unlike' : 'Like';
-            });
-        });
-    </script>
-
-    <!-- Comments Section -->
-    <div class="comments-section mt-5">
-        <h3 class="mb-4">Comments</h3>
-        <ul class="list-unstyled">
-            {% for comment in comments %}
-            <li class="border rounded p-3 mb-3 shadow-sm">
-                <div>
-                    <p class="mb-1">
-                        <strong>{{ comment.user.username }}</strong> 
-                        <span class="text-muted small">({{ comment.created_at }})</span>
-                    </p>
-                    <p class="mb-3">{{ comment.content }}</p>
-                    <!-- Reply Form -->
-                    <button class="btn btn-sm btn-link text-decoration-none" onclick="document.getElementById('parent-id-{{ comment.id }}').style.display='block';">Reply</button>
-                    <form method="post" style="display: none;" id="parent-id-{{ comment.id }}" class="mt-3">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                        <button type="submit" class="btn btn-sm btn-primary">Submit Reply</button>
-                    </form>
-                    <!-- Replies -->
-                    {% if comment.replies.all %}
-                    <ul class="list-unstyled mt-3 ms-4 border-start ps-3">
-                        {% for reply in comment.replies.all %}
-                        <li class="mb-2">
-                            <p class="mb-1">
-                                <strong>{{ reply.user.username }}</strong>
-                                <span class="text-muted small">({{ reply.created_at }})</span>
-                            </p>
-                            <p class="mb-0">{{ reply.content }}</p>
-                        </li>
+<article class="article-page article-page--editorial" itemscope itemtype="https://schema.org/NewsArticle">
+    <div class="article-layout">
+        <div class="article-layout__main">
+            <header class="article-masthead">
+                <div class="article-masthead__meta">
+                    <ul class="article-cats">
+                        {% for category in news.categories.all %}
+                        <li><a href="{% url 'category_news' category.slug %}">{{ category.name|topic_label }}</a></li>
                         {% endfor %}
                     </ul>
-                    {% endif %}
+                    <span class="article-masthead__read">{{ news|localized_reading_time }}</span>
                 </div>
-            </li>
-            {% endfor %}
-        </ul>
-        <!-- Add Comment Form -->
-        {% if user.is_authenticated %}
-        <form method="POST" class="mt-4 border rounded p-4 shadow-sm">
-            {% csrf_token %}
-            <h5>Add a Comment</h5>
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Add Comment</button>
-        </form>
-        {% else %}
-        <p class="text-muted">Please <a href="{% url 'login' %}" class="text-decoration-none">log in</a> to add a comment.</p>
-        {% endif %}
-    </div>
 
+                <h1 class="article-masthead__title" itemprop="headline"{% if LANG == 'fa' %} lang="fa" dir="rtl"{% endif %}>{{ news|localized_title }}</h1>
 
-    <!-- Related News Section -->
-    <div class="related-news mt-5">
-        <h3>Related News</h3>
-        <div class="row">
-            {% for related in related_news %}
-            <div class="col-md-4">
-                <div class="card">
-                    {% if related.image %}
-                    <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.title }}" style="height: 150px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ related.title }}</h5>
-                        <a href="{% url 'news_detail' related.id %}" class="btn btn-primary btn-sm">Read More</a>
+                <div class="article-masthead__rule" aria-hidden="true"></div>
+
+                <div class="article-byline">
+                    <div class="article-byline__author">
+                        {% author_avatar news.author size='md' %}
+                        <div>
+                            <span class="article-byline__name" itemprop="author">{{ news.author|author_name }}</span>
+                            <time class="article-byline__time" itemprop="datePublished" datetime="{{ news.published_date|date:'c' }}">{{ news.published_date|news_datetime }}</time>
+                        </div>
+                    </div>
+                    <div class="article-toolbar">
+                        <button type="button" class="article-toolbar__btn" data-article-share data-share-title="{{ news|localized_title|escape }}" data-share-url="{% absolute_url request.path %}" aria-label="{% trans 'Share story' %}">
+                            <i class="fas fa-share-alt" aria-hidden="true"></i>
+                            <span>{% trans "Share" %}</span>
+                        </button>
+                        {% if user.is_authenticated %}
+                        <button type="button" class="article-toolbar__btn{% if is_saved %} is-active{% endif %}" data-article-save data-news-id="{{ news.id }}" data-login-url="{% url 'login' %}?next={{ request.path|urlencode }}" aria-pressed="{% if is_saved %}true{% else %}false{% endif %}" aria-label="{% if is_saved %}{% trans 'Unsave story' %}{% else %}{% trans 'Save story' %}{% endif %}">
+                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                            <span data-save-label>{% if is_saved %}{% trans "Saved" %}{% else %}{% trans "Save" %}{% endif %}</span>
+                        </button>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path|urlencode }}" class="article-toolbar__btn" aria-label="{% trans 'Log in to save' %}">
+                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                            <span>{% trans "Save" %}</span>
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
-            {% empty %}
-            <p>No related news found.</p>
-            {% endfor %}
-        </div>
-    </div>
+            </header>
 
-    <!-- Views Count -->
-    <div class="text-center mt-4">
-        <p>Views: {{ news.views_count }}</p>
+            <div class="article-reading">
+                <div class="article-reading__frame">
+                    {% if news.image %}
+                    <figure class="article-hero">
+                        <div class="article-hero__media">
+                            <img src="{{ news.image.url }}" alt="{{ news|localized_title }}" width="960" height="540" decoding="async" fetchpriority="high" itemprop="image">
+                        </div>
+                    </figure>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        {% if user.user_type == 'super_admin' or user == news.author and user.user_type == 'admin' %}
+                        <div class="article-admin-actions">
+                            <a href="{% url 'edit_news' news.id %}" class="article-admin-actions__btn">{% trans "Edit" %}</a>
+                            <a href="{% url 'delete_news' news.id %}" class="article-admin-actions__btn article-admin-actions__btn--danger">{% trans "Delete" %}</a>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="article-prose" itemprop="articleBody"{% if LANG == 'fa' %} lang="fa" dir="rtl"{% endif %}>
+                        {{ news|localized_content_html }}
+                    </div>
+
+                    {% if news.tags.all %}
+                    <section class="article-keywords" aria-label="{% trans 'Keywords' %}">
+                        <p class="article-keywords__label">{% trans "Keywords" %}</p>
+                        <ul class="article-keywords__list">
+                            {% for tag in news.tags.all %}
+                            <li>
+                                <a href="{% url 'tag_news' tag.slug %}" class="article-keywords__chip">{{ tag.name|topic_label }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if news.video_embed_url %}
+            <div class="article-video article-video--embed">
+                <iframe
+                    src="{{ news.video_embed_url }}"
+                    title="{{ news|localized_title }}"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+            {% elif news.video %}
+            <div class="article-video">
+                <video controls preload="metadata">
+                    <source src="{{ news.video.url }}">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            {% endif %}
+
+            <div class="engagement-row"
+                {% if user.is_authenticated %}data-reaction-bar="news" data-news-id="{{ news.id }}" data-login-url="{% url 'login' %}?next={{ request.path|urlencode }}"{% endif %}>
+                {% if user.is_authenticated %}
+                <div class="reaction-group" role="group" aria-label="{% trans 'React to this story' %}">
+                    <button type="button" class="reaction-btn reaction-btn--like{% if user_reaction == 'like' %} is-active{% endif %}" data-reaction="like" aria-pressed="{% if user_reaction == 'like' %}true{% else %}false{% endif %}" aria-label="{% trans 'Like story' %}">
+                        <i class="fas fa-thumbs-up" aria-hidden="true"></i>
+                        <span data-count="likes">{{ total_likes }}</span>
+                    </button>
+                    <button type="button" class="reaction-btn reaction-btn--dislike{% if user_reaction == 'dislike' %} is-active{% endif %}" data-reaction="dislike" aria-pressed="{% if user_reaction == 'dislike' %}true{% else %}false{% endif %}" aria-label="{% trans 'Dislike story' %}">
+                        <i class="fas fa-thumbs-down" aria-hidden="true"></i>
+                        <span data-count="dislikes">{{ total_dislikes }}</span>
+                    </button>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}?next={{ request.path|urlencode }}" class="btn btn-outline-primary btn-sm">{% trans "Log in to react" %}</a>
+                <span class="text-muted small">{{ total_likes }} {% trans "likes" %} · {{ total_dislikes }} {% trans "dislikes" %}</span>
+                {% endif %}
+            </div>
+
+            <section class="nevox-comments" aria-labelledby="comments-heading">
+                <header class="nevox-comments__header">
+                    <div class="nevox-comments__intro">
+                        <p class="nevox-comments__kicker">{% trans "Discussion" %}</p>
+                        <h2 id="comments-heading" class="nevox-comments__title">{% trans "Join the conversation" %}</h2>
+                    </div>
+                    <span class="nevox-comments__count" aria-label="{{ comments|length }} comment{{ comments|length|pluralize }}">{{ comments|length }}</span>
+                </header>
+
+                {% if user.is_authenticated %}
+                <form method="post" class="nevox-comments__composer" data-comment-composer>
+                    {% csrf_token %}
+                    <div class="nevox-comments__composer-shell">
+                        <div class="nevox-comments__composer-accent" aria-hidden="true"></div>
+                        <div class="nevox-comments__composer-inner">
+                            {% author_avatar user size='md' %}
+                            <div class="nevox-comments__field">
+                                <label class="visually-hidden" for="id_content">{% trans "Your comment" %}</label>
+                                <textarea
+                                    name="content"
+                                    id="id_content"
+                                    class="nevox-comments__input"
+                                    rows="1"
+                                    required
+                                    minlength="2"
+                                    maxlength="2000"
+                                    data-comment-input
+                                    placeholder="{% trans 'Share your perspective on this story…' %}"
+                                ></textarea>
+                                <div class="nevox-comments__composer-bar">
+                                    <span class="nevox-comments__char" data-char-count>0 / 2000</span>
+                                    <button type="submit" class="nevox-comments__submit">
+                                        <span>{% trans "Post comment" %}</span>
+                                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                {% else %}
+                <div class="nevox-comments__signin">
+                    <div class="nevox-comments__signin-icon" aria-hidden="true">
+                        <i class="far fa-comment-dots"></i>
+                    </div>
+                    <p class="nevox-comments__signin-text">{% trans "Sign in to join the discussion" %}</p>
+                    <a href="{% url 'login' %}?next={{ request.path|urlencode }}" class="nevox-comments__signin-btn">{% trans "Log in to comment" %}</a>
+                </div>
+                {% endif %}
+
+                <div class="nevox-comments__thread">
+                    {% for comment in comments %}
+                    <article class="nevox-comment" id="comment-{{ comment.id }}">
+                        <div class="nevox-comment__avatar">
+                            {% author_avatar comment.user size='md' %}
+                        </div>
+                        <div class="nevox-comment__main">
+                            <header class="nevox-comment__meta">
+                                <span class="nevox-comment__author">{{ comment.user|author_name }}</span>
+                                <time class="nevox-comment__time" datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|news_time_ago }}</time>
+                            </header>
+                            <div class="nevox-comment__content" id="comment-content-{{ comment.id }}">
+                                <p{% if comment.content|has_persian %} lang="fa" dir="rtl"{% endif %}>{{ comment.content }}</p>
+                            </div>
+
+                            <footer class="nevox-comment__footer">
+                                {% if user.is_authenticated %}
+                                <div class="reaction-group reaction-group--comment"
+                                    data-comment-reactions
+                                    data-comment-id="{{ comment.id }}"
+                                    data-login-url="{% url 'login' %}?next={{ request.path|urlencode }}">
+                                    <button type="button" class="reaction-btn reaction-btn--like{% if comment.user_liked %} is-active{% endif %}" data-reaction="like" aria-label="{% trans 'Like comment' %}" aria-pressed="{% if comment.user_liked %}true{% else %}false{% endif %}">
+                                        <i class="fas fa-thumbs-up" aria-hidden="true"></i>
+                                        <span data-count="likes">{{ comment.like_total }}</span>
+                                    </button>
+                                    <button type="button" class="reaction-btn reaction-btn--dislike{% if comment.user_disliked %} is-active{% endif %}" data-reaction="dislike" aria-label="{% trans 'Dislike comment' %}" aria-pressed="{% if comment.user_disliked %}true{% else %}false{% endif %}">
+                                        <i class="fas fa-thumbs-down" aria-hidden="true"></i>
+                                        <span data-count="dislikes">{{ comment.dislike_total }}</span>
+                                    </button>
+                                </div>
+                                <button type="button" class="nevox-comment__action"
+                                    data-reply-toggle
+                                    data-reply-target="{{ comment.id }}"
+                                    aria-expanded="false"
+                                    aria-controls="reply-form-{{ comment.id }}">
+                                    {% trans "Reply" %}
+                                </button>
+                                {% if comment.user == user %}
+                                <button type="button" class="nevox-comment__action" data-edit-toggle="{{ comment.id }}">{% trans "Edit" %}</button>
+                                <form method="post" action="{% url 'delete_comment' comment.id %}" class="nevox-comment__delete-form" onsubmit="return confirm('{% trans "Delete this comment?" %}');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="nevox-comment__action nevox-comment__action--danger">{% trans "Delete" %}</button>
+                                </form>
+                                {% endif %}
+                                {% endif %}
+                            </footer>
+
+                            {% if user.is_authenticated and comment.user == user %}
+                            <form method="post" action="{% url 'edit_comment' comment.id %}" id="edit-form-{{ comment.id }}" class="nevox-comments__inline-form" hidden>
+                                {% csrf_token %}
+                                <label class="visually-hidden" for="edit-content-{{ comment.id }}">{% trans "Edit comment" %}</label>
+                                <textarea name="content" id="edit-content-{{ comment.id }}" class="nevox-comments__input nevox-comments__input--compact" rows="3" required minlength="2" maxlength="2000">{{ comment.content }}</textarea>
+                                <div class="nevox-comments__inline-actions">
+                                    <button type="submit" class="nevox-comments__submit nevox-comments__submit--sm">{% trans "Save" %}</button>
+                                    <button type="button" class="nevox-comment__action" data-edit-cancel data-edit-cancel="{{ comment.id }}">{% trans "Cancel" %}</button>
+                                </div>
+                            </form>
+                            {% endif %}
+
+                            {% if user.is_authenticated %}
+                            <form method="post" id="reply-form-{{ comment.id }}" class="nevox-comments__inline-form nevox-comments__inline-form--reply" hidden>
+                                {% csrf_token %}
+                                <label class="visually-hidden" for="reply-content-{{ comment.id }}">{% trans "Your reply" %}</label>
+                                <textarea name="content" id="reply-content-{{ comment.id }}" class="nevox-comments__input nevox-comments__input--compact" rows="2" required minlength="2" maxlength="2000" placeholder="{% trans 'Write a reply…' %}"></textarea>
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <div class="nevox-comments__inline-actions">
+                                    <button type="submit" class="nevox-comments__submit nevox-comments__submit--sm">{% trans "Reply" %}</button>
+                                    <button type="button" class="nevox-comment__action" data-reply-cancel data-reply-cancel="{{ comment.id }}">{% trans "Cancel" %}</button>
+                                </div>
+                            </form>
+                            {% endif %}
+
+                            {% if comment.replies.all %}
+                            <div class="nevox-comment__replies">
+                                {% for reply in comment.replies.all %}
+                                <article class="nevox-comment nevox-comment--reply">
+                                    <div class="nevox-comment__avatar">
+                                        {% author_avatar reply.user size='sm' %}
+                                    </div>
+                                    <div class="nevox-comment__main">
+                                        <header class="nevox-comment__meta">
+                                            <span class="nevox-comment__author">{{ reply.user|author_name }}</span>
+                                            <time class="nevox-comment__time" datetime="{{ reply.created_at|date:'c' }}">{{ reply.created_at|news_time_ago }}</time>
+                                        </header>
+                                        <div class="nevox-comment__content">
+                                            <p{% if reply.content|has_persian %} lang="fa" dir="rtl"{% endif %}>{{ reply.content }}</p>
+                                        </div>
+                                    </div>
+                                </article>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="nevox-comments__empty">
+                        <span class="nevox-comments__empty-mark" aria-hidden="true"></span>
+                        <h3 class="nevox-comments__empty-title">{% trans "No comments yet" %}</h3>
+                        <p class="nevox-comments__empty-text">{% trans "Be the first to share your take on this story." %}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <aside class="article-layout__sidebar" aria-label="{% trans 'Related reading' %}">
+            <div class="article-sidebar-card">
+                <h2 class="article-sidebar-card__title">{% trans "Trending" %}</h2>
+                <ol class="article-sidebar-list">
+                    {% for item in trending_sidebar %}
+                    {% if item.id != news.id %}
+                    <li>
+                        <a href="{% url 'news_detail' item.slug %}">
+                            <span class="article-sidebar-list__title">{{ item|localized_title }}</span>
+                            <time datetime="{{ item.published_date|date:'c' }}">{{ item.published_date|news_datetime }}</time>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+
+            {% if related_news %}
+            <div class="article-sidebar-card">
+                <h2 class="article-sidebar-card__title">{% trans "Related" %}</h2>
+                <div class="article-sidebar-related">
+                    {% for related in related_news|slice:":4" %}
+                    <a href="{% url 'news_detail' related.slug %}" class="article-sidebar-related__item">
+                        {% if related.image %}
+                        <img src="{{ related.image.url }}" alt="" width="80" height="56" loading="lazy" decoding="async">
+                        {% endif %}
+                        <span>{{ related|localized_title }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="article-sidebar-card article-sidebar-card--accent">
+                <h2 class="article-sidebar-card__title">{% trans "Stay in the loop" %}</h2>
+                <p class="mb-2 small">{% blocktrans with site_name=settings.site_name %}Follow the headlines that matter on {{ site_name }}.{% endblocktrans %}</p>
+                <a href="{% url 'news_list' %}" class="btn btn-outline-primary btn-sm w-100">{% trans "Browse all stories" %}</a>
+            </div>
+        </aside>
     </div>
-</div>
+</article>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reactions.js' %}?v=nevox-20260831" defer></script>
+<script src="{% static 'js/article-actions.js' %}?v=nevox-20260831" defer></script>
+<script src="{% static 'js/comments.js' %}?v=nevox-20260831" defer></script>
 {% endblock %}

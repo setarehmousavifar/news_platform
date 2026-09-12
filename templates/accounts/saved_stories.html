@@ -1,35 +1,31 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 {% load news_extras %}
 
-{% block title %}{{ category_name }} — {{ settings.site_name }}{% endblock %}
-{% block meta_description %}Stories in {{ category_name }} on {{ settings.site_name }}.{% endblock %}
-{% block og_title %}{{ category_name }} — {{ settings.site_name }}{% endblock %}
+{% block title %}{% trans "Saved stories" %} — {{ settings.site_name }}{% endblock %}
+{% block meta_description %}{% blocktrans with site_name=settings.site_name %}Your saved stories on {{ site_name }}.{% endblocktrans %}{% endblock %}
 
 {% block content %}
-<section class="site-section">
+<section class="site-section saved-stories">
     <div class="section-head">
         <div>
-            <p class="text-uppercase small fw-semibold mb-1 topic-label">Topic</p>
-            <h1 class="h2 mb-0">{{ category_name }}</h1>
-            {% if category.description %}
-            <p>{{ category.description }}</p>
-            {% else %}
-            <p>Stories filed under this category.</p>
-            {% endif %}
+            <p class="text-uppercase small fw-semibold mb-1 topic-label">{% trans "Your library" %}</p>
+            <h1 class="h2 mb-0">{% trans "Saved stories" %}</h1>
+            <p>{% trans "Articles you bookmarked to read later." %}</p>
         </div>
-        <a href="{% url 'news_list' %}" class="btn btn-outline-primary">All news</a>
+        <a href="{% url 'news_list' %}" class="btn btn-outline-primary">{% trans "Browse news" %}</a>
     </div>
 
-    {% if news_list %}
+    {% if saved_items %}
     <div class="story-list">
-        {% for news in news_list %}
-        {% include 'partials/_story_row.html' with news=news %}
+        {% for item in saved_items %}
+        {% include 'partials/_story_row.html' with news=item.news %}
         {% endfor %}
     </div>
 
     {% if page_obj.has_other_pages %}
-    <nav class="mt-4" aria-label="Category pagination">
+    <nav class="mt-4" aria-label="Saved stories pagination">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
             <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
@@ -51,9 +47,9 @@
     {% endif %}
     {% else %}
     <div class="empty-state">
-        <h2>Nothing in this topic yet</h2>
-        <p>Browse other categories or the full news list.</p>
-        <a href="{% url 'news_list' %}" class="btn btn-primary">Browse news</a>
+        <h2>No saved stories yet</h2>
+        <p>Tap the bookmark icon on any article to save it here.</p>
+        <a href="{% url 'news_list' %}" class="btn btn-primary">Discover stories</a>
     </div>
     {% endif %}
 </section>

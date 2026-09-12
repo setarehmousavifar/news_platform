@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block body_class %} auth-page-layout{% endblock %}
+
+{% block full_bleed %}
+<section class="auth-page" aria-label="{% block auth_aria_label %}Account{% endblock %}">
+    <div class="auth-page__scene auth-page__scene--editorial" aria-hidden="true">
+        <div class="auth-page__editorial">
+            <div class="auth-page__grain"></div>
+
+            <div class="auth-page__columns">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="auth-page__watermark">
+                {% include 'partials/_site_logo.html' with logo_class='site-logo--auth-watermark' %}
+            </div>
+
+            {% if auth_headlines %}
+            <div class="auth-page__ghosts">
+                {% for headline in auth_headlines %}
+                <p class="auth-page__ghost" style="--ghost-i: {{ forloop.counter0 }}">{{ headline }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="auth-page__strike"></div>
+
+            <div class="auth-page__rules">
+                <span></span><span></span>
+            </div>
+
+            {% if auth_stat_stories %}
+            <div class="auth-page__stats">
+                <span>{{ auth_stat_stories }} stories</span>
+                <span class="auth-page__stats-dot" aria-hidden="true"></span>
+                <span>{{ auth_stat_topics }} topics</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="auth-page__overlay"></div>
+
+        {% if auth_headlines %}
+        <div class="auth-page__ticker">
+            <span class="auth-page__ticker-label">Live</span>
+            <div class="auth-page__ticker-viewport">
+                <div class="auth-page__ticker-track">
+                    {% for headline in auth_headlines %}
+                    <span class="auth-page__headline">{{ headline }}</span>
+                    {% endfor %}
+                    {% for headline in auth_headlines %}
+                    <span class="auth-page__headline" aria-hidden="true">{{ headline }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="auth-page__center">
+        <a href="{% url 'home' %}" class="auth-page__brand" aria-label="{{ settings.site_name }} home">
+            {% include 'partials/_site_logo.html' with logo_class='site-logo--auth' %}
+        </a>
+        <div class="auth-panel auth-panel--editorial">
+            {% block auth_body %}{% endblock %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth-forms.js' %}?v=nevox-20260831" defer></script>
+{% block auth_extra_js %}{% endblock %}
+{% endblock %}

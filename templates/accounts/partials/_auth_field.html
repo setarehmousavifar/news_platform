@@ -1,0 +1,36 @@
+<div class="auth-field{% if field.errors %} auth-field--invalid{% endif %}" data-field="{{ field.name }}">
+    <label class="form-label" for="{{ field.id_for_label }}">
+        {{ field.label }}{% if field.field.required %}<span class="auth-required" aria-hidden="true">*</span>{% endif %}
+    </label>
+    {% if field.name == 'password1' or field.name == 'new_password1' %}
+    <div class="password-field">
+        <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+            class="form-control password-field__input{% if field.errors %} is-invalid{% endif %}"
+            value="{{ field.value|default:'' }}"
+            autocomplete="new-password"
+            {% if field.name == 'password1' %}minlength="8"{% endif %}
+            {% if field.field.required %}required{% endif %}
+            data-password-toggle>
+        <button type="button" class="password-field__toggle" data-password-target="{{ field.id_for_label }}"
+            aria-label="Show password" aria-pressed="false">
+            <i class="fas fa-eye" aria-hidden="true"></i>
+        </button>
+    </div>
+    {% else %}
+    {{ field }}
+    {% endif %}
+    {% if field.help_text %}
+    <div class="form-text field-hint">{{ field.help_text|safe }}</div>
+    {% endif %}
+    {% if field.errors %}
+        {% for error in field.errors %}
+        <div class="field-feedback field-feedback--error" role="alert">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+    {% if field.name == 'username' %}
+    <div id="username-feedback" class="field-feedback" aria-live="polite" hidden></div>
+    {% endif %}
+    {% if field.name == 'password1' %}
+    <p id="password-length-hint" class="password-field__hint" aria-live="polite">At least 8 characters</p>
+    {% endif %}
+</div>

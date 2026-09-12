@@ -1,48 +1,235 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
+{% load cache %}
+{% load news_extras %}
+{% get_current_language as LANG %}
+
+{% block title %}{{ settings.site_name }}{% endblock %}
+{% block meta_description %}{% if hero %}{{ hero.content|truncate_meta:160 }}{% else %}{{ settings.description|truncate_meta:160 }}{% endif %}{% endblock %}
+{% block og_title %}{{ settings.site_name }}{% endblock %}
+{% block og_image %}{% if hero and hero.image %}{% absolute_url hero.image.url %}{% else %}{% absolute_url '/static/images/default_news_image.jpg' %}{% endif %}{% endblock %}
+
+{% block extra_head %}
+{% if hero and hero.image %}
+<link rel="preload" as="image" href="{{ hero.image.url }}" fetchpriority="high">
+{% endif %}
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{{ settings.site_name|escapejs }}",
+  "url": "{% absolute_url '/' %}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{% absolute_url '/news/' %}?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div id="featured-news" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for news in featured_news %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <img src="{{ news.image.url }}" class="d-block w-100" alt="{{ news.title }}" style="height: 400px; object-fit: cover;">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>{{ news.title }}</h5>
-                            <p>{{ news.content|truncatewords:20 }}</p>
-                            <a href="{% url 'news_detail' news.id %}" class="btn btn-primary">Read More</a>
+{% cache 300 home_magazine LANG %}
+<div class="home-magazine">
+    <div class="home-magazine__top">
+
+        <div class="home-magazine__main">
+            <section class="home-magazine__carousel" aria-label="Featured stories">
+            {% if carousel_slides %}
+            <div class="hero-carousel hero-carousel--magazine" data-interval="5500">
+                <div class="hero-carousel__track">
+                    {% for slide in carousel_slides %}
+                    <article class="hero-carousel__slide{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.counter0 }}">
+                        <div class="hero-carousel__media">
+                            {% if slide.image %}
+                            <img src="{{ slide.image.url }}" alt="{{ slide.title }}" width="800" height="450" {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async">
+                            {% else %}
+                            <img src="{% static 'images/default_news_image.jpg' %}" alt="{{ slide.title }}" width="800" height="450" {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async">
+                            {% endif %}
                         </div>
+                        <div class="hero-carousel__shade" aria-hidden="true"></div>
+                        <div class="hero-carousel__content">
+                            <span class="hero-carousel__tag">{% trans "Featured" %}</span>
+                            <h1 class="hero-carousel__title"><a href="{% url 'news_detail' slide.slug %}">{{ slide|localized_title }}</a></h1>
+                            <p class="hero-carousel__lead">{{ slide|localized_excerpt:120 }}</p>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% if carousel_slides|length > 1 %}
+                <div class="hero-carousel__controls hero-carousel__controls--magazine">
+                    <button type="button" class="hero-carousel__arrow hero-carousel__arrow--prev" aria-label="Previous story">
+                        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <div class="hero-carousel__dots" role="tablist" aria-label="Featured slides">
+                        {% for slide in carousel_slides %}
+                        <button type="button" class="hero-carousel__dot{% if forloop.first %} is-active{% endif %}" role="tab" aria-label="Slide {{ forloop.counter }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" data-index="{{ forloop.counter0 }}"></button>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+                    <button type="button" class="hero-carousel__arrow hero-carousel__arrow--next" aria-label="Next story">
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="hero-carousel__progress" aria-hidden="true"><span></span></div>
+                {% endif %}
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#featured-news" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#featured-news" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            {% else %}
+            <div class="home-magazine__empty-hero">
+                <h2 class="h4 mb-2">{% trans "No stories yet" %}</h2>
+                <p class="text-muted mb-3">{% trans "Run the seed command or publish your first article." %}</p>
+                <a class="btn btn-primary btn-sm" href="{% url 'news_list' %}">{% trans "Browse news" %}</a>
+            </div>
+            {% endif %}
+            </section>
+
+            <section class="home-magazine__trending" aria-labelledby="trending-heading">
+                <div class="home-section-head home-section-head--inline">
+                    <h2 id="trending-heading" class="home-section-head__title">{% trans "Trending" %}</h2>
+                </div>
+                {% if trending_news %}
+                <div class="home-trending-strip">
+                    {% for news in trending_news %}
+                    <a href="{% url 'news_detail' news.slug %}" class="home-trending-card motion-reveal">
+                        <span class="home-trending-card__media">
+                            {% if news.image %}
+                            <img src="{{ news.image.url }}" alt="" width="220" height="140" loading="lazy" decoding="async">
+                            {% else %}
+                            <img src="{% static 'images/default_news_image.jpg' %}" alt="" width="220" height="140" loading="lazy" decoding="async">
+                            {% endif %}
+                        </span>
+                        <span class="home-trending-card__body">
+                            <span class="home-trending-card__time">{{ news.published_date|news_time_ago }}</span>
+                            <span class="home-trending-card__title">{{ news|localized_title }}</span>
+                        </span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted small">{% trans "No trending stories yet." %}</p>
+                {% endif %}
+            </section>
         </div>
 
-        
-        <!-- Latest News -->
-        <div class="col-md-6">
-            <h2 class="mb-3">Latest News</h2>
-            <ul class="list-group">
-                {% for news in latest_news %}
-                    <li class="list-group-item">
-                        <a href="{% url 'news_detail' news.id %}">{{ news.title }}</a>
-                    </li>
-                {% empty %}
-                    <li class="list-group-item">No news found, Please check back later.</li>
-                {% endfor %}
-            </ul>
-            <div class="text-center mt-4">
-                <a href="{% url 'news_list' %}" class="btn btn-secondary">View All News</a>
-            </div>
+        <div class="home-magazine__sidecols">
+            <aside class="home-magazine__popular" aria-label="Popular stories">
+                <div class="home-widget home-widget--popular">
+                    <h2 class="home-widget__title">{% trans "Popular" %}</h2>
+                    <ul class="home-popular-list">
+                        {% for news in popular_news %}
+                        <li class="home-popular-list__item">
+                            <a href="{% url 'news_detail' news.slug %}">
+                                <span class="home-popular-list__thumb">
+                                    {% if news.image %}
+                                    <img src="{{ news.image.url }}" alt="" width="72" height="56" loading="lazy" decoding="async">
+                                    {% else %}
+                                    <img src="{% static 'images/default_news_image.jpg' %}" alt="" width="72" height="56" loading="lazy" decoding="async">
+                                    {% endif %}
+                                </span>
+                                <span class="home-popular-list__body">
+                                    <span class="home-popular-list__title">{{ news|localized_title }}</span>
+                                    <span class="home-popular-list__meta">
+                                        <i class="far fa-clock" aria-hidden="true"></i>
+                                        {{ news.published_date|news_time_ago }}
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="text-muted small">{% trans "No popular stories yet." %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </aside>
+
+            <aside class="home-magazine__latest" aria-label="Latest stories">
+                <div class="home-widget home-widget--latest">
+                    <h2 class="home-widget__title">{% trans "Latest stories" %}</h2>
+                    {% if latest_timeline %}
+                    <ol class="home-latest-stories">
+                        {% for news in latest_timeline %}
+                        <li class="home-latest-stories__item">
+                            <a href="{% url 'news_detail' news.slug %}">
+                                <time class="home-latest-stories__time" datetime="{{ news.published_date|date:'c' }}">{{ news.published_date|news_time_ago }}</time>
+                                <span class="home-latest-stories__headline"{% if LANG == 'fa' %} lang="fa" dir="rtl"{% endif %}>{{ news|localized_title }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                    {% else %}
+                    <p class="text-muted small mb-0">{% trans "No stories yet." %}</p>
+                    {% endif %}
+                </div>
+            </aside>
         </div>
-    </div>
+
+    </div>{# /.home-magazine__top #}
+
+    <div class="home-magazine__below">
+        {# ---- World news row ---- #}
+        <section class="home-magazine__world" aria-labelledby="world-news-heading">
+            <div class="home-section-head">
+                <h2 id="world-news-heading" class="home-section-head__title">{% trans "World news" %}</h2>
+                <a href="{% url 'news_list' %}" class="home-section-head__link">{% trans "View all" %} →</a>
+            </div>
+            {% if world_news %}
+            <div class="home-world-grid">
+                {% for news in world_news %}
+                <article class="home-world-card motion-reveal">
+                    <a href="{% url 'news_detail' news.slug %}" class="home-world-card__media" tabindex="-1" aria-hidden="true">
+                        {% if news.image %}
+                        <img src="{{ news.image.url }}" alt="" width="300" height="180" loading="lazy" decoding="async">
+                        {% else %}
+                        <img src="{% static 'images/default_news_image.jpg' %}" alt="" width="300" height="180" loading="lazy" decoding="async">
+                        {% endif %}
+                    </a>
+                    <div class="home-world-card__body">
+                        <div class="home-world-card__meta">
+                            <time datetime="{{ news.published_date|date:'c' }}">
+                                <i class="far fa-clock" aria-hidden="true"></i>
+                                {{ news.published_date|news_datetime }}
+                            </time>
+                        </div>
+                        <h3 class="home-world-card__title">
+                            <a href="{% url 'news_detail' news.slug %}">{{ news|localized_title }}</a>
+                        </h3>
+                        <a href="{% url 'news_detail' news.slug %}" class="home-world-card__cta">{% trans "Read more" %} »</a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted small">{% trans "No world news stories yet." %}</p>
+            {% endif %}
+        </section>
+
+        {# ---- Top stories ---- #}
+        <section class="home-magazine__stories" aria-labelledby="top-stories-heading">
+            <div class="home-section-head">
+                <h2 id="top-stories-heading" class="home-section-head__title">{% trans "Top stories" %}</h2>
+                <a href="{% url 'news_list' %}" class="home-section-head__link">{% trans "View all" %} →</a>
+            </div>
+            {% if top_stories %}
+            <div class="story-list story-list--home">
+                {% for news in top_stories %}
+                {% include 'partials/_story_row.html' with news=news %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state py-4">
+                <p class="mb-0 text-muted">{% trans "Check back soon for more headlines." %}</p>
+            </div>
+            {% endif %}
+        </section>
+
+    </div>{# /.home-magazine__below #}
 </div>
+{% endcache %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home-carousel.js' %}?v=nevox-20260909" defer></script>
 {% endblock %}

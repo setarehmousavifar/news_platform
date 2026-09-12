@@ -1,58 +1,65 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'accounts/auth_layout.html' %}
+{% load i18n %}
 
-{% block content %}
-<div class="container mt-5">
-    <!-- Page Title -->
-    <h2 class="text-center">Profile</h2>
+{% block body_class %} auth-page-layout auth-page-layout--profile{% endblock %}
+{% block title %}{% trans "Profile" %} — {{ settings.site_name }}{% endblock %}
+{% block auth_aria_label %}{% trans "Your profile" %}{% endblock %}
 
-    <!-- Profile Update Form -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-6">
-            <form method="post" class="p-4 border rounded bg-light shadow-sm">
-                {% csrf_token %}
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="first_name" class="form-label">First Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <label for="last_name" class="form-label">Last Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
-                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="phone_number" class="form-label">Phone Number</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
-                    </div>
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                </div>
-            </form>
+{% block auth_body %}
+<div class="auth-panel__header auth-reveal" style="--reveal-delay: 0ms;">
+    <h1>{% trans "Your profile" %}</h1>
+    <p class="lead">{% trans "Update the details associated with your account." %}</p>
+</div>
+
+{% if form.non_field_errors %}
+<div class="auth-alert auth-alert--error auth-reveal" role="alert" style="--reveal-delay: 40ms;">
+    {% for error in form.non_field_errors %}
+    <p class="mb-0">{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" novalidate class="auth-form auth-form--compact" id="profile-form">
+    {% csrf_token %}
+    {% if show_avatar %}
+    <div class="profile-avatar-field auth-reveal" style="--reveal-delay: 50ms;">
+        <label class="form-label" for="{{ form.avatar.id_for_label }}">Publisher photo <span class="text-muted">(optional)</span></label>
+        <div class="profile-avatar-field__row">
+            {% load news_extras %}
+            {% author_avatar user size='lg' %}
+            {{ form.avatar }}
+        </div>
+        <p class="form-text field-hint mb-0">Shown beside stories you publish.</p>
+        {% for error in form.avatar.errors %}
+        <div class="field-feedback field-feedback--error" role="alert">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row g-2 auth-reveal" style="--reveal-delay: 60ms;">
+        <div class="col-6">
+            {% include 'accounts/partials/_auth_field.html' with field=form.first_name %}
+        </div>
+        <div class="col-6">
+            {% include 'accounts/partials/_auth_field.html' with field=form.last_name %}
         </div>
     </div>
-</div>
+    <div class="auth-reveal" style="--reveal-delay: 90ms;">
+        {% include 'accounts/partials/_auth_field.html' with field=form.username %}
+    </div>
+    <div class="auth-reveal" style="--reveal-delay: 120ms;">
+        {% include 'accounts/partials/_auth_field.html' with field=form.email %}
+    </div>
+    <div class="auth-form__actions auth-reveal" style="--reveal-delay: 160ms;">
+        <button type="submit" class="btn btn-primary btn-auth-submit w-100">
+            <span>{% trans "Save profile" %}</span>
+            <i class="fas fa-check" aria-hidden="true"></i>
+        </button>
+    </div>
+</form>
+
+<p class="auth-panel__footer auth-reveal" style="--reveal-delay: 200ms;">
+    <a href="{% url 'saved_stories' %}">{% trans "Saved stories" %}</a>
+    <span aria-hidden="true"> · </span>
+    <a href="{% url 'home' %}">{% trans "Back to home" %}</a>
+</p>
 {% endblock %}

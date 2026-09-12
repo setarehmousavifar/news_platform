@@ -1,0 +1,10 @@
+{% load news_extras %}
+{% with name=user|author_name %}
+<span class="author-avatar author-avatar--{{ size }}" title="{{ name }}">
+    {% if user.avatar %}
+    <img src="{{ user.avatar.url }}" alt="{{ name }}" width="32" height="32" loading="lazy" decoding="async">
+    {% else %}
+    <span class="author-avatar__initials" aria-hidden="true">{{ name|slice:":1"|upper }}</span>
+    {% endif %}
+</span>
+{% endwith %}

@@ -1,89 +1,58 @@
-{% extends 'base.html' %}
+{% extends 'accounts/auth_layout.html' %}
 {% load static %}
 
-{% block content %}
-<div class="container mt-5">
-    <h1 class="text-center">Sign Up</h1>
-    <form method="post" class="p-4 border rounded bg-light shadow-sm">
-        {% csrf_token %}
-        
-        <!-- First Name & Last Name -->
-        <div class="row mb-3">
-            <div class="col">
-                <label for="first_name" class="form-label"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    <input type="text" id="first_name" name="first_name" class="form-control" placeholder="First Name">
-                </div>
-            </div>
-            <div class="col">
-                <label for="last_name" class="form-label"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name">
-                </div>
-            </div>
-        </div>
+{% block body_class %} auth-page-layout auth-page-layout--register{% endblock %}
+{% block title %}Sign up — {{ settings.site_name }}{% endblock %}
+{% block auth_aria_label %}Create account{% endblock %}
 
-        <!-- Username -->
-        <div class="mb-3">
-            <label for="username" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Username">
-            </div>
-        </div>
-
-        <!-- Email Address -->
-        <div class="mb-3">
-            <label for="email" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Email Address">
-            </div>
-        </div>
-
-        <!-- Phone Number -->
-        <div class="mb-3">
-            <label for="phone_number" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="Phone Number">
-            </div>
-        </div>
-
-        <!-- Password -->
-        <div class="mb-3">
-            <label for="password1" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" id="password1" name="password1" class="form-control" placeholder="Password">
-            </div>
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mb-3">
-            <label for="password2" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password">
-            </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-        </div>
-    </form>
-
-    <!-- Login Prompt -->
-    <div class="text-center mt-3">
-        <p>If you already have an account, <a href="{% url 'login' %}">login here</a>.</p>
-    </div>
-
-    <!-- Back to Home Link -->
-    <div class="text-center mt-3">
-        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
-    </div>
+{% block auth_body %}
+<div class="auth-panel__header auth-reveal" style="--reveal-delay: 0ms;">
+    <h1>Create account</h1>
+    <p class="lead">Follow the news, share your voice, stay in the loop.</p>
 </div>
+
+{% if form.non_field_errors %}
+<div class="auth-alert auth-alert--error auth-reveal" role="alert" style="--reveal-delay: 40ms;">
+    {% for error in form.non_field_errors %}
+    <p class="mb-0">{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" action="{% url 'register' %}" novalidate id="register-form" class="auth-form auth-form--compact">
+    {% csrf_token %}
+    <div class="row g-2 auth-reveal" style="--reveal-delay: 60ms;">
+        <div class="col-6">
+            {% include 'accounts/partials/_auth_field.html' with field=form.first_name %}
+        </div>
+        <div class="col-6">
+            {% include 'accounts/partials/_auth_field.html' with field=form.last_name %}
+        </div>
+    </div>
+    <div class="auth-reveal" style="--reveal-delay: 90ms;">
+        {% include 'accounts/partials/_auth_field.html' with field=form.username %}
+    </div>
+    <div class="auth-reveal" style="--reveal-delay: 120ms;">
+        {% include 'accounts/partials/_auth_field.html' with field=form.email %}
+    </div>
+    <div class="auth-reveal" style="--reveal-delay: 150ms;">
+        {% include 'accounts/partials/_auth_field.html' with field=form.password1 %}
+    </div>
+    <div class="auth-form__actions auth-reveal" style="--reveal-delay: 190ms;">
+        <button type="submit" class="btn btn-primary btn-auth-submit w-100">
+            <span>Sign up</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
+    </div>
+</form>
+
+<p class="auth-panel__footer auth-reveal" style="--reveal-delay: 230ms;">
+    Already registered? <a href="{% url 'login' %}">Login</a>
+</p>
+{% endblock %}
+
+{% block auth_extra_js %}
+<script>
+    window.AUTH_CHECK_USERNAME_URL = "{% url 'check_username' %}";
+</script>
 {% endblock %}

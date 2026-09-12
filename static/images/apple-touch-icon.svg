@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="nevox news">
+  <rect width="180" height="180" rx="36" fill="#0a0a0a"/>
+  <path d="M48 122V58h20.5l29 50.5V58H122v64h-20.2L68.5 71.5V122H48z" fill="#f7f7f7"/>
+  <path d="M44 132 C 68 122, 112 122, 136 132" stroke="#e31837" stroke-width="9" fill="none" stroke-linecap="round"/>
+</svg>

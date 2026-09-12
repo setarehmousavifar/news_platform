@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="stay-connected{% if compact %} stay-connected--compact{% endif %}">
+    {% if not compact %}<p class="stay-connected__label">{% trans "Stay connected" %}</p>{% endif %}
+    <ul class="stay-connected__list" role="list">
+        <li>
+            <a href="https://x.com/nevoxnews" class="stay-connected__link stay-connected__link--x" target="_blank" rel="noopener noreferrer" aria-label="{% trans 'Follow us on X' %}">
+                {% include 'partials/_social_svg.html' with icon='x' class='stay-connected__icon' %}
+            </a>
+        </li>
+        <li>
+            <a href="https://www.instagram.com/nevoxnews" class="stay-connected__link stay-connected__link--instagram" target="_blank" rel="noopener noreferrer" aria-label="{% trans 'Follow us on Instagram' %}">
+                {% include 'partials/_social_svg.html' with icon='instagram' class='stay-connected__icon' %}
+            </a>
+        </li>
+        <li>
+            <a href="https://www.facebook.com/nevoxnews" class="stay-connected__link stay-connected__link--facebook" target="_blank" rel="noopener noreferrer" aria-label="{% trans 'Follow us on Facebook' %}">
+                {% include 'partials/_social_svg.html' with icon='facebook' class='stay-connected__icon' %}
+            </a>
+        </li>
+        <li>
+            <a href="https://www.youtube.com/@nevoxnews" class="stay-connected__link stay-connected__link--youtube" target="_blank" rel="noopener noreferrer" aria-label="{% trans 'Subscribe on YouTube' %}">
+                {% include 'partials/_social_svg.html' with icon='youtube' class='stay-connected__icon' %}
+            </a>
+        </li>
+    </ul>
+</div>

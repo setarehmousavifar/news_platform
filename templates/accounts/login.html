@@ -1,54 +1,71 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'accounts/auth_layout.html' %}
+{% load i18n %}
 
-{% block content %}
-<div class="container mt-5">
-    <h1 class="text-center">Login</h1>
-    <form method="post" class="p-4 border rounded bg-light shadow-sm">
-        {% csrf_token %}
-        
-        <!-- Username -->
-        <div class="mb-3">
-            <label for="username" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Username">
-            </div>
-        </div>
+{% block title %}{% trans "Login" %} — {{ settings.site_name }}{% endblock %}
+{% block auth_aria_label %}{% trans "Sign in" %}{% endblock %}
 
-        <!-- Password -->
-        <div class="mb-3">
-            <label for="password" class="form-label"></label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Password">
-            </div>
-        </div>
-
-        <!-- Remember Me -->
-        <div class="form-check mb-3">
-            <input type="checkbox" id="remember_me" name="remember_me" class="form-check-input">
-            <label for="remember_me" class="form-check-label">Remember Me</label>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-
-        <!-- Forgot Password -->
-        <div class="text-center mt-3">
-            <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot your password?</a>
-        </div>
-
-        <!-- Sign Up -->
-        <div class="text-center mt-3">
-            <p>Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Sign up here.</a></p>
-        </div>
-    </form>
-
-    <div class="text-center mt-3">
-        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
-    </div>
+{% block auth_body %}
+<div class="auth-panel__header auth-reveal" style="--reveal-delay: 0ms;">
+    <h1>{% trans "Sign in" %}</h1>
 </div>
+
+{% if form.non_field_errors %}
+<div class="auth-alert auth-alert--error auth-reveal" role="alert" style="--reveal-delay: 40ms;">
+    {% for error in form.non_field_errors %}
+    <p class="mb-0">{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" action="{% url 'login' %}" novalidate class="auth-form auth-form--compact" id="login-form">
+    {% csrf_token %}
+    <div class="auth-field auth-reveal{% if form.username.errors %} auth-field--invalid{% endif %}" style="--reveal-delay: 60ms;">
+        <label class="form-label" for="{{ form.username.id_for_label }}">
+            {% trans "Username" %}<span class="auth-required" aria-hidden="true">*</span>
+        </label>
+        <input type="text" name="username" id="{{ form.username.id_for_label }}"
+            class="form-control{% if form.username.errors %} is-invalid{% endif %}"
+            value="{{ form.username.value|default:'' }}" autocomplete="username" required autofocus>
+        {% for error in form.username.errors %}
+        <div class="field-feedback field-feedback--error" role="alert">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="auth-field auth-reveal{% if form.password.errors %} auth-field--invalid{% endif %}" style="--reveal-delay: 100ms;">
+        <label class="form-label" for="{{ form.password.id_for_label }}">
+            {% trans "Password" %}<span class="auth-required" aria-hidden="true">*</span>
+        </label>
+        <div class="password-field">
+            <input type="password" name="password" id="{{ form.password.id_for_label }}"
+                class="form-control password-field__input{% if form.password.errors %} is-invalid{% endif %}"
+                autocomplete="current-password" required data-password-toggle>
+            <button type="button" class="password-field__toggle" data-password-target="{{ form.password.id_for_label }}"
+                aria-label="{% trans 'Show password' %}" aria-pressed="false">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+            </button>
+        </div>
+        {% for error in form.password.errors %}
+        <div class="field-feedback field-feedback--error" role="alert">{{ error }}</div>
+        {% endfor %}
+        <p class="auth-forgot">
+            <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
+        </p>
+    </div>
+
+    <div class="form-check auth-field auth-reveal" style="--reveal-delay: 140ms;">
+        <input type="checkbox" id="remember_me" name="remember_me" class="form-check-input">
+        <label for="remember_me" class="form-check-label">{% trans "Remember me" %}</label>
+    </div>
+
+    <div class="auth-form__actions auth-reveal" style="--reveal-delay: 180ms;">
+        <button type="submit" class="btn btn-primary btn-auth-submit w-100">
+            <span>{% trans "Login" %}</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
+    </div>
+</form>
+
+<p class="auth-panel__footer auth-reveal" style="--reveal-delay: 220ms;">
+    {% trans "New here?" %} <a href="{% url 'register' %}">{% trans "Create an account" %}</a>
+</p>
 {% endblock %}

@@ -1,17 +1,30 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Contact — {{ settings.site_name }}{% endblock %}
+{% block meta_description %}Contact {{ settings.site_name }}{% if settings.default_email %} at {{ settings.default_email }}{% endif %}.{% endblock %}
+{% block og_title %}Contact — {{ settings.site_name }}{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <!-- Page Title -->
-    <h1 class="text-center">Contact Us</h1>
-
-    <!-- Contact Information -->
-    <p class="text-center mt-3">This is the "Contact Us" page. Write your contact information here.</p>
-
-    <!-- Back to Home Link -->
-    <div class="text-center mt-3">
-        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+<section class="site-section">
+    <div class="page-panel mx-auto" style="max-width: 640px;">
+        <h1>Contact</h1>
+        <p class="lead">Editorial desk and general inquiries.</p>
+        <dl class="row mb-0">
+            {% if settings.default_email %}
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8"><a href="mailto:{{ settings.default_email }}">{{ settings.default_email }}</a></dd>
+            {% endif %}
+            {% if settings.phone_number and settings.phone_number != '00000000000' %}
+            <dt class="col-sm-4">Phone</dt>
+            <dd class="col-sm-8">{{ settings.phone_number }}</dd>
+            {% endif %}
+            <dt class="col-sm-4">Site</dt>
+            <dd class="col-sm-8">{{ settings.site_name }}</dd>
+        </dl>
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">Back to home</a>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %}

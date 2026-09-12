@@ -1,0 +1,84 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Dashboard — {{ settings.site_name }}{% endblock %}
+
+{% block admin_content %}
+<div class="admin-top">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Overview of content health and quick actions.</p>
+    </div>
+    <a href="{% url 'create_news' %}" class="btn btn-primary">Create news</a>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <span class="stat-card__label">Published</span>
+        <span class="stat-card__value">{{ stats.published }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card__label">Drafts</span>
+        <span class="stat-card__value">{{ stats.drafts }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card__label">Total views</span>
+        <span class="stat-card__value">{{ stats.total_views }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card__label">{% if user.user_type == 'super_admin' %}Users{% else %}My stories{% endif %}</span>
+        <span class="stat-card__value">{% if user.user_type == 'super_admin' %}{{ stats.users }}{% else %}{{ stats.mine }}{% endif %}</span>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="admin-panel">
+            <h2>Recent stories</h2>
+            {% if recent_news %}
+            <div class="table-responsive">
+                <table class="table admin-table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for news in recent_news %}
+                        <tr>
+                            <td>{{ news.title|truncatechars:48 }}</td>
+                            <td><span class="admin-badge admin-badge--{{ news.status }}">{{ news.status }}</span></td>
+                            <td>{{ news.views_count }}</td>
+                            <td class="admin-table__actions">
+                                <a class="btn btn-sm btn-primary" href="{% url 'edit_news' news.pk %}">Edit</a>
+                                {% if news.status == 'published' %}
+                                <a class="btn btn-sm btn-outline-editorial" href="{% url 'news_detail' news.slug %}">View</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="admin-muted mb-0">No stories yet. Create your first article.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="admin-panel">
+            <h2>Quick links</h2>
+            <div class="admin-quick-links">
+                <a href="{% url 'manage_news' %}">Manage all news →</a>
+                <a href="{% url 'create_news' %}">Write a new story →</a>
+                {% if user.user_type == 'super_admin' %}
+                <a href="{% url 'manage_users' %}">Manage users & roles →</a>
+                {% endif %}
+                <a href="{% url 'news_list' %}">Open public news list →</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

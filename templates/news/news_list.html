@@ -1,74 +1,77 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
+{% load news_extras %}
+{% get_current_language as LANG %}
+
+{% block title %}{% trans "News" %} — {{ settings.site_name }}{% endblock %}
+{% block meta_description %}{% blocktrans with site_name=settings.site_name %}Browse the latest stories from {{ site_name }}.{% endblocktrans %}{% endblock %}
+{% block og_title %}{% trans "News" %} — {{ settings.site_name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Page Title -->
-    <h1 class="text-center">News List</h1>
+<section class="site-section">
+    <div class="section-head">
+        <div>
+            <h1 class="h2 mb-0">{% trans "All stories" %}</h1>
+            <p>{% trans "Search, filter by topic, and sort by what matters to you." %}</p>
+        </div>
+    </div>
 
-    <!-- Search and Filter Form -->
-    <form method="get" action="{% url 'news_list' %}" class="d-flex justify-content-between mb-4">
-        <input type="text" name="q" class="form-control w-50 me-2" value="{{ query }}" placeholder="Search news...">
-        <select name="category" class="form-select me-2">
-            <option value="">All Categories</option>
+    <form method="get" action="{% url 'news_list' %}" class="filters-bar">
+        <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="{% trans 'Search headlines and body text…' %}">
+        <select name="category" class="form-select">
+            <option value="">{% trans "All categories" %}</option>
             {% for category in categories %}
-                <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
-                    {{ category.name }}
-                </option>
+            <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                {{ category.name|topic_label }}
+            </option>
             {% endfor %}
         </select>
-        <button type="submit" class="btn btn-success">Search</button>
+        {% if request.GET.sort %}
+        <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+        {% endif %}
+        <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
     </form>
 
-    <!-- Sort Options -->
-    <div class="sort-options mb-4 text-end">
-        <a href="?sort=latest" class="btn btn-outline-primary me-2">Latest</a>
-        <a href="?sort=popular" class="btn btn-outline-primary">Most Popular</a>
+    <div class="sort-row">
+        <a href="?{% url_replace sort='latest' page=None %}" class="btn btn-outline-primary btn-sm {% if current_sort == 'latest' %}active{% endif %}">{% trans "Latest" %}</a>
+        <a href="?{% url_replace sort='popular' page=None %}" class="btn btn-outline-primary btn-sm {% if current_sort == 'popular' %}active{% endif %}">{% trans "Most popular" %}</a>
     </div>
 
-    <!-- News Cards -->
-    <div class="row">
+    {% if news_list %}
+    <div class="story-list">
         {% for news in news_list %}
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                {% if news.image %}
-                <img src="{{ news.image.url }}" class="card-img-top" alt="{{ news.title }}">
-                {% else %}
-                <img src="{% static 'default_news_image.jpg' %}" class="card-img-top" alt="Default image">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ news.title }}</h5>
-                    <p class="card-text text-muted">{{ news.content|slice:":150" }}...</p>
-                    <a href="{% url 'news_detail' news.id %}" class="btn btn-primary">Read More</a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="alert alert-warning" role="alert">
-            No news found. Please check back later.
-        </div>
+        {% include 'partials/_story_row.html' with news=news %}
         {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>No stories found</h2>
+        <p>Try a different search or browse all categories.</p>
+        <a href="{% url 'news_list' %}" class="btn btn-primary">Clear filters</a>
+    </div>
+    {% endif %}
 
-    <!-- Pagination -->
-    <nav aria-label="Page navigation">
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4" aria-label="News pagination">
         <ul class="pagination justify-content-center">
-            {% if news.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ news.previous_page_number }}">Previous</a>
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.previous_page_number %}">Previous</a></li>
+            {% endif %}
+            {% for num in page_obj|elided_page_range %}
+            {% if num == page_obj.paginator.ELLIPSIS %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+            {% else %}
+            <li class="page-item{% if page_obj.number == num %} active{% endif %}">
+                <a class="page-link" href="?{% url_replace page=num %}">{{ num }}</a>
             </li>
             {% endif %}
-            {% for num in news.paginator.page_range %}
-            <li class="page-item {% if news.number == num %}active{% endif %}">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-            </li>
             {% endfor %}
-            {% if news.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ news.next_page_number }}">Next</a>
-            </li>
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.next_page_number %}">Next</a></li>
             {% endif %}
         </ul>
     </nav>
-</div>
+    {% endif %}
+</section>
 {% endblock %}

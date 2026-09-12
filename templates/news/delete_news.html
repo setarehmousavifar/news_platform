@@ -1,13 +1,20 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'admin_panel/base_admin.html' %}
 
-{% block content %}
-<div class="container mt-5">
-    <h2>Are you sure you want to delete "{{ news.title }}"?</h2>
-    <form method="post">
+{% block title %}Archive news — {{ settings.site_name }}{% endblock %}
+
+{% block admin_content %}
+<div class="admin-top">
+    <div>
+        <h1>Archive story</h1>
+        <p>Soft-delete keeps the record but hides it from the public site.</p>
+    </div>
+</div>
+<div class="admin-panel" style="max-width: 560px;">
+    <p class="mb-3">Archive <strong>{{ news.title }}</strong>?</p>
+    <form method="post" class="d-flex flex-wrap gap-2">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a href="{% url 'news_list' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-danger">Archive</button>
+        <a href="{% url 'manage_news' %}" class="btn btn-outline-admin">Cancel</a>
     </form>
 </div>
 {% endblock %}

@@ -2,21 +2,17 @@
 {% load static %}
 {% load news_extras %}
 
-{% block title %}{{ category_name }} — {{ settings.site_name }}{% endblock %}
-{% block meta_description %}Stories in {{ category_name }} on {{ settings.site_name }}.{% endblock %}
-{% block og_title %}{{ category_name }} — {{ settings.site_name }}{% endblock %}
+{% block title %}{{ tag.name|topic_label }} — {{ settings.site_name }}{% endblock %}
+{% block meta_description %}Stories tagged with {{ tag.name|topic_label }} on {{ settings.site_name }}.{% endblock %}
+{% block og_title %}{{ tag.name|topic_label }} — {{ settings.site_name }}{% endblock %}
 
 {% block content %}
 <section class="site-section">
     <div class="section-head">
         <div>
-            <p class="text-uppercase small fw-semibold mb-1 topic-label">Topic</p>
-            <h1 class="h2 mb-0">{{ category_name }}</h1>
-            {% if category.description %}
-            <p>{{ category.description }}</p>
-            {% else %}
-            <p>Stories filed under this category.</p>
-            {% endif %}
+            <p class="text-uppercase small fw-semibold mb-1 topic-label">Keyword</p>
+            <h1 class="h2 mb-0">{{ tag.name|topic_label }}</h1>
+            <p>Stories related to this keyword.</p>
         </div>
         <a href="{% url 'news_list' %}" class="btn btn-outline-primary">All news</a>
     </div>
@@ -29,7 +25,7 @@
     </div>
 
     {% if page_obj.has_other_pages %}
-    <nav class="mt-4" aria-label="Category pagination">
+    <nav class="mt-4" aria-label="Keyword pagination">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
             <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
@@ -51,8 +47,8 @@
     {% endif %}
     {% else %}
     <div class="empty-state">
-        <h2>Nothing in this topic yet</h2>
-        <p>Browse other categories or the full news list.</p>
+        <h2>No stories for this keyword yet</h2>
+        <p>Try another keyword or browse all news.</p>
         <a href="{% url 'news_list' %}" class="btn btn-primary">Browse news</a>
     </div>
     {% endif %}

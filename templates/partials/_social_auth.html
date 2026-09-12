@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="social-auth auth-reveal" style="--reveal-delay: {{ reveal_delay|default:'50ms' }};">
+    <p class="social-auth__label">
+        {% if auth_mode == 'register' %}{% trans "Sign up with" %}{% else %}{% trans "Continue with" %}{% endif %}
+    </p>
+    <div class="social-auth__row" role="group" aria-label="{% trans 'Social sign-in options' %}">
+        <button type="button" class="social-auth__circle" data-social-provider="google" aria-label="{% trans 'Sign in with Google' %}">
+            {% include 'partials/_social_svg.html' with icon='google' class='social-auth__icon' %}
+        </button>
+        <button type="button" class="social-auth__circle" data-social-provider="facebook" aria-label="{% trans 'Sign in with Facebook' %}">
+            {% include 'partials/_social_svg.html' with icon='facebook' class='social-auth__icon' %}
+        </button>
+        <button type="button" class="social-auth__circle" data-social-provider="github" aria-label="{% trans 'Sign in with GitHub' %}">
+            {% include 'partials/_social_svg.html' with icon='github' class='social-auth__icon' %}
+        </button>
+        <button type="button" class="social-auth__circle" data-social-provider="apple" aria-label="{% trans 'Sign in with Apple' %}">
+            {% include 'partials/_social_svg.html' with icon='apple' class='social-auth__icon' %}
+        </button>
+    </div>
+    <p class="social-auth__divider" role="separator"><span>{% trans "or use email" %}</span></p>
+</div>

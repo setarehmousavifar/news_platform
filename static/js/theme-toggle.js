@@ -1,60 +1,60 @@
+/**
+ * Theme toggle + toasts. Cache-bust with base.html ?v= query.
+ */
 document.addEventListener('DOMContentLoaded', function () {
     const body = document.body;
     const themeToggle = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme') || 'day-mode';
 
-    // اعمال تم ذخیره‌شده
+    body.classList.remove('day-mode', 'night-mode');
     body.classList.add(savedTheme);
-    themeToggle.textContent = savedTheme === 'day-mode' ? 'Night' : 'Day';
 
-    // تغییر تم هنگام کلیک روی دکمه
-    themeToggle.addEventListener('click', function () {
-        const isDayMode = body.classList.contains('day-mode');
-
-        if (isDayMode) {
-            body.classList.replace('day-mode', 'night-mode');
-            localStorage.setItem('theme', 'night-mode');
-            this.textContent = 'Day';
-        } else {
-            body.classList.replace('night-mode', 'day-mode');
-            localStorage.setItem('theme', 'day-mode');
-            this.textContent = 'Night';
+    function syncThemeButton() {
+        if (!themeToggle) return;
+        let icon = themeToggle.querySelector('i');
+        if (!icon) {
+            themeToggle.textContent = '';
+            icon = document.createElement('i');
+            icon.setAttribute('aria-hidden', 'true');
+            themeToggle.appendChild(icon);
         }
-    });
-});
-
-// نمایش یا پنهان کردن فرم ریپلای
-function toggleReplyForm(commentId) {
-    const form = document.getElementById(`reply-form-${commentId}`);
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
-// نمایش یا پنهان کردن فرم اضافه کردن کامنت
-function toggleAddComment() {
-    const form = document.getElementById('add-comment-form');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById("theme-toggle");
-    const icon = toggleButton.querySelector("i");
-
-    function updateIcon() {
-        if (document.body.classList.contains("day-mode")) {
-            icon.classList.remove("fa-moon");
-            icon.classList.add("fa-sun");
-        } else {
-            icon.classList.remove("fa-sun");
-            icon.classList.add("fa-moon");
-        }
+        const isDay = body.classList.contains('day-mode');
+        icon.className = isDay ? 'fas fa-sun' : 'fas fa-moon';
+        themeToggle.setAttribute('aria-label', isDay ? 'Switch to night mode' : 'Switch to day mode');
+        themeToggle.setAttribute('aria-pressed', isDay ? 'false' : 'true');
+        themeToggle.setAttribute('title', isDay ? 'Night mode' : 'Day mode');
     }
 
-    toggleButton.addEventListener("click", function () {
-        document.body.classList.toggle("day-mode");
-        document.body.classList.toggle("night-mode");
-        updateIcon();
-    });
+    syncThemeButton();
 
-    // Set initial icon
-    updateIcon();
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+            const isDay = body.classList.contains('day-mode');
+            body.classList.remove('day-mode', 'night-mode');
+            body.classList.add(isDay ? 'night-mode' : 'day-mode');
+            localStorage.setItem('theme', isDay ? 'night-mode' : 'day-mode');
+            syncThemeButton();
+        });
+    }
+
+    document.querySelectorAll('.toast').forEach(function (el) {
+        if (typeof bootstrap === 'undefined' || !bootstrap.Toast) return;
+        bootstrap.Toast.getOrCreateInstance(el).show();
+    });
 });
+
+function toggleReplyForm(commentId) {
+    const form = document.getElementById('reply-form-' + commentId);
+    const trigger = document.querySelector('[data-reply-target="' + commentId + '"]');
+    if (!form) return;
+    const isHidden = form.hasAttribute('hidden');
+    if (isHidden) {
+        form.removeAttribute('hidden');
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        const field = form.querySelector('textarea, input');
+        if (field) field.focus();
+    } else {
+        form.setAttribute('hidden', '');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+}

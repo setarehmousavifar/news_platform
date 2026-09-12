@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load i18n_extras %}
+{% get_current_language as CURRENT_LANG %}
+
+<nav class="lang-switch" aria-label="{% trans 'Language' %}">
+    {% for lang_code, lang_name in LANGUAGES %}
+    <form action="{% url 'set_language' %}" method="post" class="lang-switch__item">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{% url_for_language lang_code %}">
+        <button
+            type="submit"
+            name="language"
+            value="{{ lang_code }}"
+            class="lang-switch__btn{% if CURRENT_LANG == lang_code %} is-active{% endif %}"
+            aria-pressed="{% if CURRENT_LANG == lang_code %}true{% else %}false{% endif %}"
+            title="{{ lang_name }}"
+        >
+            {% if lang_code == 'fa' %}فا{% else %}EN{% endif %}
+        </button>
+    </form>
+    {% endfor %}
+</nav>

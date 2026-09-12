@@ -1,119 +1,196 @@
 {% load static %}
+{% load i18n %}
+{% load news_extras %}
+{% get_current_language as LANG %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANG }}" dir="{% if LANG == 'fa' %}rtl{% else %}ltr{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ settings.site_name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <title>{% block title %}{{ settings.site_name }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ settings.description|truncate_meta:160 }}{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}{% absolute_url %}{% endblock %}">
+    <link rel="icon" href="{% static 'images/favicon.svg' %}?v=nevox-brand-02" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.svg' %}?v=nevox-brand-02">
+
+    <meta property="og:site_name" content="{{ settings.site_name }}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ settings.site_name }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ settings.description|truncate_meta:160 }}{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{% absolute_url %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% absolute_url '/static/images/default_news_image.jpg' %}{% endblock %}">
+    <meta property="og:locale" content="{% if LANG == 'fa' %}fa_IR{% else %}en_US{% endif %}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ settings.description|truncate_meta:160 }}{% endblock %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik:wght@400;600;700&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"></noscript>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=nevox-admin-ui-01">
+    {% block extra_head %}{% endblock %}
+    {% block structured_data %}{% endblock %}
 </head>
-<body class="day-mode">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-orange shadow">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">{{ settings.site_name }}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<body class="day-mode{% if LANG == 'fa' %} site-rtl{% endif %}{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main-content">{% trans "Skip to main content" %}</a>
+
+    <div class="site-topbar">
+        <div class="container-fluid px-3 px-lg-4 site-topbar__inner">
+            {% include 'partials/_nav_date.html' %}
+            <div class="site-topbar__aside d-none d-md-flex align-items-center gap-3">
+                {% include 'partials/_language_switcher.html' %}
+                {% include 'partials/_stay_connected.html' with compact=True %}
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg site-nav" aria-label="{% trans 'Primary' %}">
+        <div class="container-fluid px-3 px-lg-4">
+            <a class="navbar-brand site-logo-link" href="{% url 'home' %}">{% include 'partials/_site_logo.html' with logo_class='site-logo--nav' %}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="{% trans 'Toggle navigation' %}">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav site-nav-primary me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link text-white text-nowrap small" href="{% url 'home' %}">Home</a>
+                        <a class="nav-link{% if request.resolver_match.url_name == 'news_list' or request.resolver_match.url_name == 'news_detail' or request.resolver_match.url_name == 'category_news' %} active-nav{% endif %}" href="{% url 'news_list' %}">{% trans "News" %}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white text-nowrap small" href="{% url 'about' %}">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white text-nowrap small" href="{% url 'category_news' 'breaking_news' %}">Breaking News</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white text-nowrap small" href="{% url 'category_news' 'technology' %}">Technology</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white text-nowrap small" href="{% url 'category_news' 'health' %}">Health</a>
-                    </li>
-                    <!-- Dropdown for More Categories -->
+                    {% if all_categories %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white small" href="#" id="moreCategoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            More
+                        <a class="nav-link dropdown-toggle{% if request.resolver_match.url_name == 'category_news' %} active-nav{% endif %}" href="#" id="topicsDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            {% trans "Topics" %}
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="moreCategoriesDropdown">
-                            {% for category in more_categories %}
-                            <li>
-                                <a class="dropdown-item text-nowrap small" href="{% url 'category_news' category.name %}">{{ category.name }}</a>
-                            </li>
-                            {% endfor %}
-                        </ul>
+                        <div class="dropdown-menu topics-menu" aria-labelledby="topicsDropdown">
+                            <div class="topics-menu__header">
+                                <span class="topics-menu__title">{% trans "Browse topics" %}</span>
+                                <span class="topics-menu__count">{{ all_categories|length }}</span>
+                            </div>
+                            <div class="topics-menu__scroll-wrap">
+                                <div class="topics-menu__fade topics-menu__fade--top is-hidden" data-topics-fade="top" aria-hidden="true"></div>
+                                <ul class="topics-menu__list list-unstyled mb-0" data-topics-scroll>
+                                    {% for category in all_categories %}
+                                    <li>
+                                        <a class="dropdown-item topics-menu__item" href="{% url 'category_news' category.slug %}">{{ category.name|topic_label }}</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="topics-menu__fade topics-menu__fade--bottom" data-topics-fade="bottom" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active-nav{% endif %}" href="{% url 'about' %}">{% trans "About" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active-nav{% endif %}" href="{% url 'contact' %}">{% trans "Contact" %}</a>
                     </li>
                 </ul>
-                <!-- Search Form -->
-                <form class="d-flex align-items-center" method="get" action="{% url 'news_list' %}">
-                    <div class="input-group">
-                        <input class="form-control form-control-sm" type="search" placeholder="Search" name="q" aria-label="Search">
-                        <button class="btn btn-outline-light btn-sm" type="submit">
-                            <i class="fas fa-search"></i> <!-- آیکون ذره‌بین -->
+
+                <div class="site-nav-tools d-flex flex-column flex-lg-row align-items-lg-center gap-2 gap-lg-3 my-2 my-lg-0">
+                    <form class="site-nav-search" method="get" action="{% url 'news_list' %}" role="search">
+                        <label class="visually-hidden" for="nav-search">{% trans "Search stories" %}</label>
+                        <input id="nav-search" class="form-control form-control-sm" type="search" placeholder="{% trans 'Search' %}" name="q" value="{{ request.GET.q }}">
+                        <button class="btn btn-outline-editorial btn-sm" type="submit" aria-label="{% trans 'Submit search' %}">
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </button>
-                    </div>
-                </form>
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        {% if user.user_type == 'admin' %}
-                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'create_news' %}">Create News</a></li>
-                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'news_list' %}">Manage News</a></li>
-                        {% elif user.user_type == 'super_admin' %}
-                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'manage_users' %}">Manage Users</a></li>
-                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'create_news' %}">Create News</a></li>
-                            <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'news_list' %}">Manage News</a></li>
+                    </form>
+
+                    <ul class="navbar-nav align-items-lg-center flex-row flex-wrap gap-1 mb-0">
+                        <li class="nav-item d-md-none">
+                            {% include 'partials/_language_switcher.html' %}
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% trans "Account" %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                                {% if user.user_type == 'admin' or user.user_type == 'super_admin' %}
+                                <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">{% trans "Dashboard" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'create_news' %}">{% trans "Create" %}</a></li>
+                                {% endif %}
+                                {% if user.user_type == 'super_admin' %}
+                                <li><a class="dropdown-item" href="{% url 'manage_users' %}">{% trans "Users" %}</a></li>
+                                {% endif %}
+                                {% if user.user_type == 'admin' or user.user_type == 'super_admin' %}
+                                <li><hr class="dropdown-divider"></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'saved_stories' %}">{% trans "Saved stories" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">{% trans "Profile" %}</a></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">{% trans "Logout" %}</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">{% trans "Sign up" %}</a></li>
                         {% endif %}
-                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'profile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'logout' %}">Logout</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link text-white text-nowrap small" href="{% url 'register' %}">SignUp</a></li>
-                    {% endif %}
-                </ul>
-                <!-- Theme Toggle -->
-                <button id="theme-toggle" class="btn btn-sm btn-light ms-3">
-                    <i class="fas fa-sun"></i> <!-- آیکون خورشید -->
-                </button>
+                        <li class="nav-item">
+                            <button id="theme-toggle" type="button" class="theme-toggle-btn" aria-label="{% trans 'Switch theme' %}" aria-pressed="false">
+                                <i class="fas fa-sun" aria-hidden="true"></i>
+                                <span class="visually-hidden" data-theme-label>{% trans "Theme" %}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
-    </div>
+    {% block full_bleed %}{% endblock %}
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-4">
-        <p>{{ settings.footer_text }}</p>
-        <p>Email: {{ settings.default_email }} | Phone: {{ settings.phone_number }}</p>
+    <main id="main-content" class="site-main" tabindex="-1">
+        <div class="container px-3 px-lg-4">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="site-footer__grid">
+            <div class="site-footer__brand">
+                {% include 'partials/_site_logo.html' with logo_class='site-logo--footer' logo_variant='light' %}
+                <p class="site-footer__tagline">{{ settings.description|truncate_meta:120 }}</p>
+            </div>
+            <div class="site-footer__connect">
+                {% include 'partials/_stay_connected.html' %}
+            </div>
+            <div class="site-footer__meta">
+                <p class="mb-1 small">{{ settings.footer_text }}</p>
+                <p class="mb-0 small">
+                    <a href="mailto:{{ settings.default_email }}">{{ settings.default_email }}</a>
+                    {% if settings.phone_number %} · {{ settings.phone_number }}{% endif %}
+                </p>
+            </div>
+        </div>
     </footer>
 
-    <!-- Toast Container for Messages -->
-    <div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 1050;">
+    <div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 1080;">
         <div class="toast-container position-fixed top-0 end-0 p-3">
             {% if messages %}
                 {% for message in messages %}
-                    <div class="toast align-items-center text-white {% if message.tags == 'success' %}bg-success{% elif message.tags == 'error' %}bg-danger{% elif message.tags == 'warning' %}bg-warning{% else %}bg-info{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                    <div class="toast align-items-center text-bg-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
                         <div class="d-flex">
-                            <div class="toast-body">
-                                {{ message }}
-                            </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            <div class="toast-body">{{ message }}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="{% trans 'Close' %}"></button>
                         </div>
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="{% static 'js/theme-toggle.js' %}?v=nevox-i18n-restore-01" defer></script>
+    <script src="{% static 'js/motion.js' %}?v=nevox-i18n-restore-01" defer></script>
+    <script src="{% static 'js/topics-menu.js' %}?v=nevox-i18n-restore-01" defer></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,29 @@
+{% load static %}
+{% load i18n %}
+{% load news_extras %}
+{% get_current_language as LANG %}
+<article class="story-row motion-reveal">
+    <a href="{% url 'news_detail' news.slug %}" class="story-row__media" tabindex="-1" aria-hidden="true">
+        {% if news.image %}
+        <img src="{{ news.image.url }}" alt="" width="280" height="158" loading="lazy" decoding="async">
+        {% else %}
+        <img src="{% static 'images/default_news_image.jpg' %}" alt="" width="280" height="158" loading="lazy" decoding="async">
+        {% endif %}
+    </a>
+    <div class="story-row__body">
+        <div class="story-row__meta">
+            <time datetime="{{ news.published_date|date:'c' }}">{{ news.published_date|news_datetime }}</time>
+            {% if news.author %}
+            <span class="story-row__byline">
+                {% author_avatar news.author size='xs' %}
+                <span>{{ news.author|author_name }}</span>
+            </span>
+            {% endif %}
+        </div>
+        <h2 class="story-row__title">
+            <a href="{% url 'news_detail' news.slug %}"{% if LANG == 'fa' %} lang="fa" dir="rtl"{% endif %}>{{ news|localized_title }}</a>
+        </h2>
+        <p class="story-row__excerpt"{% if LANG == 'fa' %} lang="fa" dir="rtl"{% endif %}>{{ news|localized_excerpt:160 }}</p>
+        <a href="{% url 'news_detail' news.slug %}" class="story-row__cta">{% trans "Read more" %} →</a>
+    </div>
+</article>

@@ -1,0 +1,535 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nevox news 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-31 12:00+0000\n"
+"PO-Revision-Date: 2026-08-31 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Persian\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid "%(days)s DAYS AGO"
+msgstr "%(days)s روز پیش"
+
+msgid "%(hours)s HRS AGO"
+msgstr "%(hours)s ساعت پیش"
+
+msgid "%(minutes)s MINS AGO"
+msgstr "%(minutes)s دقیقه پیش"
+
+msgid "%(minutes)s min read"
+msgstr "%(minutes)s دقیقه مطالعه"
+
+msgid "1 DAY AGO"
+msgstr "۱ روز پیش"
+
+msgid "1 HR AGO"
+msgstr "۱ ساعت پیش"
+
+msgid "1 MIN AGO"
+msgstr "۱ دقیقه پیش"
+
+msgid "About"
+msgstr "درباره ما"
+
+msgid "Account"
+msgstr "حساب کاربری"
+
+msgid "All categories"
+msgstr "همه دسته‌ها"
+
+msgid "All news"
+msgstr "همه اخبار"
+
+msgid "All stories"
+msgstr "همه اخبار"
+
+msgid "Already registered?"
+msgstr "قبلاً ثبت‌نام کرده‌اید؟"
+
+msgid "Articles you bookmarked to read later."
+msgstr "مقالاتی که برای بعد ذخیره کرده‌اید."
+
+msgid "At least 8 characters"
+msgstr "حداقل ۸ کاراکتر"
+
+msgid "Back to home"
+msgstr "بازگشت به خانه"
+
+msgid "Be the first to share your take on this story."
+msgstr "اولین نفری باشید که نظر خود را درباره این خبر می‌گوید."
+
+msgid "Breaking news, deep analysis, and stories that matter."
+msgstr "اخبار فوری، تحلیل عمیق و مطالب مهم."
+
+msgid "Browse all stories"
+msgstr "مرور همه اخبار"
+
+msgid "Browse news"
+msgstr "مرور اخبار"
+
+msgid "Browse other categories or the full news list."
+msgstr "سایر دسته‌ها یا فهرست کامل اخبار را ببینید."
+
+msgid "Browse the latest stories from %(site_name)s."
+msgstr "آخرین اخبار %(site_name)s را مرور کنید."
+
+msgid "Browse topics"
+msgstr "مرور موضوعات"
+
+msgid "Category pagination"
+msgstr "صفحه‌بندی دسته"
+
+msgid "Check back soon for more headlines."
+msgstr "به‌زودی تیترهای بیشتری منتشر می‌شود."
+
+msgid "Clear filters"
+msgstr "پاک کردن فیلترها"
+
+msgid "Close"
+msgstr "بستن"
+
+msgid "Contact"
+msgstr "تماس"
+
+msgid "Continue with"
+msgstr "ادامه با"
+
+msgid "Create"
+msgstr "ایجاد"
+
+msgid "Create account"
+msgstr "ایجاد حساب"
+
+msgid "Create an account"
+msgstr "ایجاد حساب کاربری"
+
+msgid "Dashboard"
+msgstr "داشبورد"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Delete this comment?"
+msgstr "این نظر حذف شود؟"
+
+msgid "Discover stories"
+msgstr "کشف اخبار"
+
+msgid "Discussion"
+msgstr "گفتگو"
+
+msgid "Dislike story"
+msgstr "نپسندیدن خبر"
+
+msgid "Edit"
+msgstr "ویرایش"
+
+msgid "Email"
+msgstr "ایمیل"
+
+msgid "Featured"
+msgstr "ویژه"
+
+msgid "Featured stories"
+msgstr "اخبار ویژه"
+
+msgid "First name"
+msgstr "نام"
+
+msgid "Follow the headlines that matter on %(site_name)s."
+msgstr "تیترهای مهم %(site_name)s را دنبال کنید."
+
+msgid "Follow the news, share your voice, stay in the loop."
+msgstr "اخبار را دنبال کنید، صدای خود را به اشتراک بگذارید، در جریان بمانید."
+
+msgid "Follow us on Facebook"
+msgstr "ما را در فیسبوک دنبال کنید"
+
+msgid "Follow us on Instagram"
+msgstr "ما را در اینستاگرام دنبال کنید"
+
+msgid "Follow us on X"
+msgstr "ما را در ایکس دنبال کنید"
+
+msgid "Forgot your password?"
+msgstr "رمز عبور را فراموش کرده‌اید؟"
+
+msgid "Independent reporting and sharp analysis."
+msgstr "گزارش‌گری مستقل و تحلیل دقیق."
+
+msgid "JUST NOW"
+msgstr "همین الان"
+
+msgid "Join the conversation"
+msgstr "به گفتگو بپیوندید"
+
+msgid "Keyword"
+msgstr "کلمه کلیدی"
+
+msgid "Keyword pagination"
+msgstr "صفحه‌بندی کلمات کلیدی"
+
+msgid "Keywords"
+msgstr "کلمات کلیدی"
+
+msgid "Language"
+msgstr "زبان"
+
+msgid "Last name"
+msgstr "نام خانوادگی"
+
+msgid "Latest"
+msgstr "آخرین"
+
+msgid "Latest news"
+msgstr "آخرین اخبار"
+
+msgid "Latest stories"
+msgstr "آخرین اخبار"
+
+msgid "Letters and numbers only"
+msgstr "فقط حروف و اعداد"
+
+msgid "Like story"
+msgstr "پسندیدن خبر"
+
+msgid "Live"
+msgstr "زنده"
+
+msgid "Log in to comment"
+msgstr "ورود برای نظر دادن"
+
+msgid "Log in to react"
+msgstr "برای واکنش وارد شوید"
+
+msgid "Log in to save"
+msgstr "ورود برای ذخیره"
+
+msgid "Login"
+msgstr "ورود"
+
+msgid "Logout"
+msgstr "خروج"
+
+msgid "Most popular"
+msgstr "محبوب‌ترین"
+
+msgid "New here?"
+msgstr "تازه‌وارد هستید؟"
+
+msgid "News"
+msgstr "اخبار"
+
+msgid "News pagination"
+msgstr "صفحه‌بندی اخبار"
+
+msgid "Next"
+msgstr "بعدی"
+
+msgid "Next story"
+msgstr "خبر بعدی"
+
+msgid "No comments yet"
+msgstr "هنوز نظری ثبت نشده"
+
+msgid "No popular stories yet."
+msgstr "هنوز خبر محبوبی وجود ندارد."
+
+msgid "No saved stories yet"
+msgstr "هنوز خبری ذخیره نکرده‌اید"
+
+msgid "No stories for this keyword yet"
+msgstr "هنوز خبری برای این کلمه کلیدی نیست"
+
+msgid "No stories found"
+msgstr "خبری یافت نشد"
+
+msgid "No stories yet."
+msgstr "هنوز خبری وجود ندارد."
+
+msgid "No trending stories yet."
+msgstr "هنوز خبر پرطرفداری وجود ندارد."
+
+msgid "No world news stories yet."
+msgstr "هنوز خبر جهانی وجود ندارد."
+
+msgid "Nothing in this topic yet"
+msgstr "هنوز خبری در این موضوع نیست"
+
+msgid "Password"
+msgstr "رمز عبور"
+
+msgid "Politics, business, technology"
+msgstr "سیاست، اقتصاد، فناوری"
+
+msgid "Popular"
+msgstr "محبوب"
+
+msgid "Popular stories"
+msgstr "اخبار محبوب"
+
+msgid "Post comment"
+msgstr "ارسال نظر"
+
+msgid "Previous"
+msgstr "قبلی"
+
+msgid "Previous story"
+msgstr "خبر قبلی"
+
+msgid "Primary"
+msgstr "اصلی"
+
+msgid "Profile"
+msgstr "پروفایل"
+
+msgid "Publisher photo"
+msgstr "عکس ناشر"
+
+msgid "React to this story"
+msgstr "واکنش به این خبر"
+
+msgid "Read more"
+msgstr "ادامه مطلب"
+
+msgid "Related"
+msgstr "مرتبط"
+
+msgid "Related reading"
+msgstr "مطالب مرتبط"
+
+msgid "Remember me"
+msgstr "مرا به خاطر بسپار"
+
+msgid "Reply"
+msgstr "پاسخ"
+
+msgid "Save"
+msgstr "ذخیره"
+
+msgid "Save profile"
+msgstr "ذخیره پروفایل"
+
+msgid "Save story"
+msgstr "ذخیره خبر"
+
+msgid "Saved"
+msgstr "ذخیره شد"
+
+msgid "Saved stories"
+msgstr "اخبار ذخیره‌شده"
+
+msgid "Saved stories pagination"
+msgstr "صفحه‌بندی اخبار ذخیره‌شده"
+
+msgid "Search"
+msgstr "جستجو"
+
+msgid "Search headlines and body text…"
+msgstr "جستجو در تیترها و متن خبر…"
+
+msgid "Search stories"
+msgstr "جستجوی اخبار"
+
+msgid "Search, filter by topic, and sort by what matters to you."
+msgstr "جستجو، فیلتر بر اساس موضوع و مرتب‌سازی بر اساس اولویت شما."
+
+msgid "Share"
+msgstr "اشتراک‌گذاری"
+
+msgid "Share story"
+msgstr "اشتراک‌گذاری خبر"
+
+msgid "Share your perspective on this story…"
+msgstr "دیدگاه خود را درباره این خبر بنویسید…"
+
+msgid "Show password"
+msgstr "نمایش رمز عبور"
+
+msgid "Shown beside stories you publish."
+msgstr "در کنار اخباری که منتشر می‌کنید نمایش داده می‌شود."
+
+msgid "Sign in"
+msgstr "ورود"
+
+msgid "Sign in to join the discussion"
+msgstr "برای شرکت در گفتگو وارد شوید"
+
+msgid "Sign in with Apple"
+msgstr "ورود با اپل"
+
+msgid "Sign in with Facebook"
+msgstr "ورود با فیسبوک"
+
+msgid "Sign in with GitHub"
+msgstr "ورود با گیت‌هاب"
+
+msgid "Sign in with Google"
+msgstr "ورود با گوگل"
+
+msgid "Sign up"
+msgstr "ثبت‌نام"
+
+msgid "Sign up with"
+msgstr "ثبت‌نام با"
+
+msgid "Skip to main content"
+msgstr "رفتن به محتوای اصلی"
+
+msgid "Social sign-in options"
+msgstr "گزینه‌های ورود اجتماعی"
+
+msgid "Stay connected"
+msgstr "با ما در ارتباط باشید"
+
+msgid "Stay in the loop"
+msgstr "در جریان بمانید"
+
+msgid "Stories filed under this category."
+msgstr "اخبار این دسته‌بندی."
+
+msgid "Stories related to this keyword."
+msgstr "اخبار مرتبط با این کلمه کلیدی."
+
+msgid "Stories tagged with %(keyword)s on %(site_name)s."
+msgstr "اخبار با برچسب %(keyword)s در %(site_name)s."
+
+msgid "Stories worth your time"
+msgstr "اخباری که ارزش وقت شما را دارند"
+
+msgid "Submit search"
+msgstr "ارسال جستجو"
+
+msgid "Subscribe on YouTube"
+msgstr "در یوتیوب مشترک شوید"
+
+msgid "Switch theme"
+msgstr "تغییر تم"
+
+msgid "Tap the bookmark icon on any article to save it here."
+msgstr "روی آیکون نشانک هر خبر بزنید تا اینجا ذخیره شود."
+
+msgid "Theme"
+msgstr "تم"
+
+msgid "This email is already in use."
+msgstr "این ایمیل قبلاً استفاده شده است."
+
+msgid ""
+"This email is already registered. Try logging in or use a different email."
+msgstr "این ایمیل قبلاً ثبت شده است. وارد شوید یا ایمیل دیگری استفاده کنید."
+
+msgid "This username is already taken."
+msgstr "این نام کاربری قبلاً استفاده شده است."
+
+msgid "This username is already taken. Please choose another one."
+msgstr "این نام کاربری قبلاً استفاده شده. لطفاً نام دیگری انتخاب کنید."
+
+msgid "Toggle navigation"
+msgstr "باز و بسته کردن منو"
+
+msgid "Top stories"
+msgstr "اخبار برتر"
+
+msgid "Topic"
+msgstr "موضوع"
+
+msgid "Topics"
+msgstr "موضوعات"
+
+msgid "Trending"
+msgstr "پرطرفدار"
+
+msgid "Try a different search or browse all categories."
+msgstr "جستجوی دیگری امتحان کنید یا همه دسته‌ها را مرور کنید."
+
+msgid "Try another keyword or browse all news."
+msgstr "کلمه دیگری را امتحان کنید یا همه اخبار را ببینید."
+
+msgid "Unsave story"
+msgstr "لغو ذخیره خبر"
+
+msgid "Update the details associated with your account."
+msgstr "اطلاعات حساب کاربری خود را به‌روزرسانی کنید."
+
+msgid "Username"
+msgstr "نام کاربری"
+
+msgid "Username can only contain letters and numbers."
+msgstr "نام کاربری فقط می‌تواند شامل حروف و اعداد باشد."
+
+msgid "Username must be at least 3 characters."
+msgstr "نام کاربری باید حداقل ۳ کاراکتر باشد."
+
+msgid "Users"
+msgstr "کاربران"
+
+msgid "View all"
+msgstr "مشاهده همه"
+
+msgid "World headlines in real time"
+msgstr "تیترهای جهانی در لحظه"
+
+msgid "World news"
+msgstr "اخبار جهان"
+
+msgid "Your comment"
+msgstr "نظر شما"
+
+msgid "Your library"
+msgstr "کتابخانه شما"
+
+msgid "Your profile"
+msgstr "پروفایل شما"
+
+msgid "Your profile has been updated successfully."
+msgstr "پروفایل شما با موفقیت به‌روزرسانی شد."
+
+msgid "Your saved stories on %(site_name)s."
+msgstr "اخبار ذخیره‌شده شما در %(site_name)s."
+
+msgid "Your voice in the conversation"
+msgstr "صدای شما در گفتگو"
+
+msgid "dislikes"
+msgstr "نپسند"
+
+msgid "likes"
+msgstr "پسند"
+
+msgid "optional"
+msgstr "اختیاری"
+
+msgid "or use email"
+msgstr "یا با ایمیل"
+
+msgid "stories"
+msgstr "اخبار"
+
+msgid "topics"
+msgstr "موضوع"
+
+msgid "Like comment"
+msgstr "پسندیدن نظر"
+
+msgid "Dislike comment"
+msgstr "نپسندیدن نظر"
+
+msgid "Edit comment"
+msgstr "ویرایش نظر"
+
+msgid "Your reply"
+msgstr "پاسخ شما"
+
+msgid "Write a reply…"
+msgstr "پاسخ خود را بنویسید…"
+
+msgid "Cancel"
+msgstr "انصراف"

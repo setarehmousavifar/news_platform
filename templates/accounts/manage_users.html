@@ -1,32 +1,45 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'admin_panel/base_admin.html' %}
 
-{% block content %}
-<div class="container mt-5">
-    <h2>Manage Users</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>User Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
+{% block title %}Manage users — {{ settings.site_name }}{% endblock %}
+
+{% block admin_content %}
+<div class="admin-top">
+    <div>
+        <h1>Manage users</h1>
+        <p>Roles and account details for the newsroom.</p>
+    </div>
+</div>
+
+<div class="admin-panel">
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead>
                 <tr>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.get_user_type_display }}</td>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}{% if u.id == user.id %} <span class="small admin-muted">(you)</span>{% endif %}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.get_user_type_display }}</td>
                     <td>
-                        <a href="{% url 'edit_user_role' user.id %}" class="btn btn-warning btn-sm">Edit Role</a>
-                        <a href="{% url 'edit_user' user.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="{% url 'delete_user' user.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        <div class="admin-actions">
+                            <a href="{% url 'edit_user_role' u.id %}" class="btn btn-sm btn-outline-warning">Role</a>
+                            <a href="{% url 'edit_user' u.pk %}" class="btn btn-sm btn-outline-admin">Edit</a>
+                            <a href="{% url 'delete_user' u.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
                     </td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% empty %}
+                <tr><td colspan="4" class="admin-muted">No users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

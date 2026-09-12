@@ -1,17 +1,32 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}About — {{ settings.site_name }}{% endblock %}
+{% block meta_description %}About {{ settings.site_name }}: {{ settings.description|truncatewords:28 }}{% endblock %}
+{% block og_title %}About — {{ settings.site_name }}{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <!-- Page Title -->
-    <h1 class="text-center">About Us</h1>
-
-    <!-- About Information -->
-    <p class="text-center mt-3">This is the "About Us" page. Write information about the site here.</p>
-
-    <!-- Back to Home Link -->
-    <div class="text-center mt-3">
-        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+<section class="site-section">
+    <div class="page-panel mx-auto" style="max-width: 720px;">
+        <h1>About {{ settings.site_name }}</h1>
+        <p class="lead">
+            {{ settings.description|default:"Independent reporting, clear analysis, and stories that help readers stay informed." }}
+        </p>
+        <p>
+            {{ settings.site_name }} is a bilingual news desk (English and Persian) covering world affairs,
+            business, technology, culture, and more. Readers can browse by topic, follow developing stories,
+            leave comments, and save articles for later.
+        </p>
+        <p>
+            Our editorial tools let journalists publish and update stories with categories, keywords,
+            images, and video. Site administrators manage users and keep the public homepage organized
+            around featured, trending, and latest coverage.
+        </p>
+        <p class="mb-0">
+            Questions for the desk?
+            Visit the <a href="{% url 'contact' %}">contact page</a>{% if settings.default_email %}
+            or email <a href="mailto:{{ settings.default_email }}">{{ settings.default_email }}</a>{% endif %}.
+        </p>
     </div>
-</div>
+</section>
 {% endblock %}
