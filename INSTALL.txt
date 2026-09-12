@@ -1,0 +1,72 @@
+================================================================================
+  nevox news! — راهنمای نصب / INSTALL GUIDE
+================================================================================
+
+دانشجو: Setare Mousavi
+ریپازیتوری: https://github.com/setarehmousavifar/news_platform.git
+
+--------------------------------------------------------------------------------
+پیش‌نیازها
+--------------------------------------------------------------------------------
+1) Python 3.10 تا 3.13
+2) MySQL یا MariaDB (روی ویندوز: XAMPP → Start MySQL)
+3) ساخت دیتابیس:
+
+   CREATE DATABASE news_platform
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+--------------------------------------------------------------------------------
+نصب سریع (Windows PowerShell)
+--------------------------------------------------------------------------------
+cd news_platform
+
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+pip install -r requirements.txt
+
+copy .env.example .env
+# در فایل .env مقدار DB_PASSWORD را برابر پسورد MySQL خودتان بگذارید
+# (در XAMPP معمولاً خالی است یا 1111)
+
+python manage.py migrate
+python manage.py seed_premium --purge --skip-translate
+python manage.py runserver localhost:8000
+
+سایت:
+  انگلیسی:  http://localhost:8000/
+  فارسی:    http://localhost:8000/fa/
+  ادمین:    http://localhost:8000/admin/
+  API Docs: http://localhost:8000/api/docs/
+
+ورود پیش‌فرض بعد از seed:
+  username: admin
+  password: admin1234
+
+--------------------------------------------------------------------------------
+اگر نصب mysqlclient خطا داد
+--------------------------------------------------------------------------------
+pip install PyMySQL
+# پروژه به‌صورت خودکار از PyMySQL استفاده می‌کند.
+
+--------------------------------------------------------------------------------
+نکات مهم
+--------------------------------------------------------------------------------
+- حتماً آدرس http://localhost:8000 را باز کنید (ترکیب با 127.0.0.1 باعث CSRF می‌شود).
+- قبل از runserver، MySQL را در XAMPP روشن کنید.
+- فایل .env و پوشه venv را ارسال نکنید.
+- برای دادهٔ کامل دمو از seed_premium استفاده کنید (حدود ۸۴ خبر، ۲۱ دسته).
+- ترجمهٔ فارسی متن اخبار (اختیاری، نیاز به اینترنت):
+
+  python manage.py translate_news --force --clear
+
+--------------------------------------------------------------------------------
+دستورهای مفید
+--------------------------------------------------------------------------------
+python manage.py seed_demo
+python manage.py seed_premium --purge --skip-translate
+python manage.py sync_tags
+python manage.py translate_news --force --clear
+python -m pytest -q
+
+================================================================================

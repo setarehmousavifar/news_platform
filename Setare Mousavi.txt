@@ -1,0 +1,16 @@
+Student: Setare Mousavi
+Project: nevox news!
+GitHub: https://github.com/setarehmousavifar/news_platform.git
+
+How to run:
+1. Install Python 3.10+ and start MySQL (XAMPP).
+2. Create database: news_platform (utf8mb4).
+3. pip install -r requirements.txt
+4. copy .env.example .env  (set DB_PASSWORD)
+5. python manage.py migrate
+6. python manage.py seed_premium --purge --skip-translate
+7. python manage.py runserver localhost:8000
+
+Full instructions: README.md and INSTALL.txt
+
+Demo login: admin / admin1234

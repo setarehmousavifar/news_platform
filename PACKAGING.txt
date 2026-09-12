@@ -1,0 +1,27 @@
+================================================================================
+  HOW TO PACKAGE THIS PROJECT
+================================================================================
+
+Create a ZIP from the project folder for submission.
+
+INCLUDE:
+  accounts/, news/, interactions/, news_platform/
+  templates/, static/, locale/, scripts/
+  manage.py, requirements.txt, pytest.ini
+  README.md, INSTALL.txt, DEFENSE_QA_CHECKLIST.md
+  .env.example, .gitignore, docker-compose.yml, dockerfile
+  Setare Mousavi.txt
+  media/.gitkeep, logs/.gitkeep
+
+EXCLUDE (do NOT send):
+  venv/, .venv/, news_platform/Lib/, news_platform/Scripts/, news_platform/Include/
+  .env
+  __pycache__/, .pytest_cache/, .idea/, .vscode/
+  staticfiles/
+  media/news_images/, media/news_videos/, media/avatars/
+  logs/*.log
+  .git/   (optional — include only if the repository was requested)
+
+Or simply: zip the folder after deleting venv and .env.
+
+================================================================================
